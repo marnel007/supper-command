@@ -30,11 +30,18 @@ func NewShell() *Shell {
 	Register(&HostnameCommand{})
 	Register(&VerCommand{})
 	Register(&DirCommand{})
+	Register(&PortscanCommand{})
 	Register(&PingCommand{})
 	Register(&NslookupCommand{})
 	Register(&TracertCommand{})
 	Register(&WgetCommand{})
 	Register(&IpconfigCommand{})
+	Register(&NetstatCommand{})
+	Register(&ArpCommand{})
+	Register(&RouteCommand{})
+	Register(&SpeedtestCommand{})
+	Register(&NetdiscoverCommand{})
+	Register(&SniffCommand{})
 	return &Shell{}
 }
 
@@ -80,7 +87,15 @@ func completer(d prompt.Document) []prompt.Suggest {
 	// Gather all commands and aliases
 	var suggestions []prompt.Suggest
 	for name, cmd := range commandRegistry {
-		suggestions = append(suggestions, prompt.Suggest{Text: name, Description: cmd.Description()})
+		desc := cmd.Description()
+		shortDesc := desc
+		if idx := strings.Index(desc, "\n"); idx != -1 {
+			shortDesc = desc[:idx]
+		}
+		if len(shortDesc) > 60 {
+			shortDesc = shortDesc[:57] + "..."
+		}
+		suggestions = append(suggestions, prompt.Suggest{Text: name, Description: shortDesc})
 	}
 
 	args := strings.Fields(d.TextBeforeCursor())
