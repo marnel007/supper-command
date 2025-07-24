@@ -1,0 +1,390 @@
+name: 🚀 SuperShell CI/CD
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  release:
+    types: [ published ]
+
+env:
+  GO_VERSION: "1.24.5"
+  BINARY_NAME: "supershell"
+
+jobs:
+  test:
+    name: 🧪 Test Suite
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 📥 Checkout Code
+      uses: actions/checkout@v4
+      
+    - name: 🐹 Setup Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: ${{ env.GO_VERSION }}
+        
+    - name: 📦 Cache Dependencies
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.cache/go-build
+          ~/go/pkg/mod
+        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-
+          
+    - name: 📥 Download Dependencies
+      run: go mod download
+      
+    - name: 🔍 Run Tests
+      run: |
+        go test -v -race -coverprofile=coverage.out ./...
+        go tool cover -html=coverage.out -o coverage.html
+        
+    - name: 🧹 Lint Code
+      uses: golangci/golangci-lint-action@v3
+      with:
+        version: latest
+        args: --timeout=5m
+        
+    - name: 🔒 Security Scan
+      uses: securecodewarrior/github-action-gosec@master
+      with:
+        args: './...'
+        
+    - name: 📊 Upload Coverage
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage.out
+        flags: unittests
+        name: codecov-umbrella
+
+  benchmark:
+    name: ⚡ Performance Benchmark
+    runs-on: ubuntu-latest
+    needs: test
+    
+    steps:
+    - name: 📥 Checkout Code
+      uses: actions/checkout@v4
+      
+    - name: 🐹 Setup Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: ${{ env.GO_VERSION }}
+        
+    - name: 🏃 Run Benchmarks
+      run: |
+        go test -bench=. -benchmem -run=^$ ./... > benchmark.txt
+        echo "## ⚡ Performance Benchmarks" >> $GITHUB_STEP_SUMMARY
+        echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+        cat benchmark.txt >> $GITHUB_STEP_SUMMARY
+        echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+        
+    - name: 📊 Store Benchmark Results
+      uses: benchmark-action/github-action-benchmark@v1
+      with:
+        tool: 'go'
+        output-file-path: benchmark.txt
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        auto-push: true
+
+  build:
+    name: 🔨 Build Matrix
+    runs-on: ${{ matrix.os }}
+    needs: test
+    
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        include:
+          - os: ubuntu-latest
+            goos: linux
+            goarch: amd64
+            suffix: ""
+          - os: windows-latest
+            goos: windows
+            goarch: amd64
+            suffix: ".exe"
+          - os: macos-latest
+            goos: darwin
+            goarch: amd64
+            suffix: ""
+            
+    steps:
+    - name: 📥 Checkout Code
+      uses: actions/checkout@v4
+      
+    - name: 🐹 Setup Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: ${{ env.GO_VERSION }}
+        
+    - name: 📦 Cache Dependencies
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.cache/go-build
+          ~/go/pkg/mod
+        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-
+          
+    - name: 🔨 Build Binary
+      run: |
+        go build -ldflags="-s -w -X main.version=${{ github.ref_name }}" \
+          -o ${{ env.BINARY_NAME }}-${{ matrix.goos }}-${{ matrix.goarch }}${{ matrix.suffix }} \
+          ./cmd/supershell
+          
+    - name: 🧪 Test Binary
+      if: matrix.os != 'windows-latest'
+      run: |
+        chmod +x ${{ env.BINARY_NAME }}-${{ matrix.goos }}-${{ matrix.goarch }}${{ matrix.suffix }}
+        ./${{ env.BINARY_NAME }}-${{ matrix.goos }}-${{ matrix.goarch }}${{ matrix.suffix }} -c "help"
+        
+    - name: 🧪 Test Binary (Windows)
+      if: matrix.os == 'windows-latest'
+      run: |
+        .\${{ env.BINARY_NAME }}-${{ matrix.goos }}-${{ matrix.goarch }}${{ matrix.suffix }} -c "help"
+        
+    - name: 📤 Upload Artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ env.BINARY_NAME }}-${{ matrix.goos }}-${{ matrix.goarch }}
+        path: ${{ env.BINARY_NAME }}-${{ matrix.goos }}-${{ matrix.goarch }}${{ matrix.suffix }}
+
+  cross-compile:
+    name: 🌍 Cross-Compile Additional Platforms
+    runs-on: ubuntu-latest
+    needs: test
+    
+    strategy:
+      matrix:
+        include:
+          - goos: linux
+            goarch: arm64
+          - goos: linux
+            goarch: arm
+          - goos: darwin
+            goarch: arm64
+          - goos: freebsd
+            goarch: amd64
+            
+    steps:
+    - name: 📥 Checkout Code
+      uses: actions/checkout@v4
+      
+    - name: 🐹 Setup Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: ${{ env.GO_VERSION }}
+        
+    - name: 🔨 Cross-Compile
+      env:
+        GOOS: ${{ matrix.goos }}
+        GOARCH: ${{ matrix.goarch }}
+      run: |
+        go build -ldflags="-s -w -X main.version=${{ github.ref_name }}" \
+          -o ${{ env.BINARY_NAME }}-${{ matrix.goos }}-${{ matrix.goarch }} \
+          ./cmd/supershell
+          
+    - name: 📤 Upload Artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ env.BINARY_NAME }}-${{ matrix.goos }}-${{ matrix.goarch }}
+        path: ${{ env.BINARY_NAME }}-${{ matrix.goos }}-${{ matrix.goarch }}
+
+  integration-test:
+    name: 🔗 Integration Tests
+    runs-on: ubuntu-latest
+    needs: build
+    
+    services:
+      network-test:
+        image: nginx:alpine
+        ports:
+          - 8080:80
+          
+    steps:
+    - name: 📥 Checkout Code
+      uses: actions/checkout@v4
+      
+    - name: 📥 Download Linux Binary
+      uses: actions/download-artifact@v3
+      with:
+        name: ${{ env.BINARY_NAME }}-linux-amd64
+        
+    - name: 🔧 Setup Binary
+      run: |
+        chmod +x ${{ env.BINARY_NAME }}-linux-amd64
+        sudo mv ${{ env.BINARY_NAME }}-linux-amd64 /usr/local/bin/supershell
+        
+    - name: 🌐 Test Network Commands
+      run: |
+        echo "Testing network commands..."
+        supershell -c "ping google.com --count 3"
+        supershell -c "portscan localhost 8080"
+        supershell -c "ipconfig"
+        
+    - name: ⚡ Test Agent OS Features
+      run: |
+        echo "Testing Agent OS features..."
+        supershell -c "dev profile"
+        supershell -c "perf stats"
+        supershell -c "dev test help"
+        
+    - name: 📊 Performance Test
+      run: |
+        echo "Running performance tests..."
+        supershell -c "perf benchmark --all"
+        supershell -c "perf optimize"
+
+  security-scan:
+    name: 🔒 Security Analysis
+    runs-on: ubuntu-latest
+    needs: test
+    
+    steps:
+    - name: 📥 Checkout Code
+      uses: actions/checkout@v4
+      
+    - name: 🔍 Run Trivy Vulnerability Scanner
+      uses: aquasecurity/trivy-action@master
+      with:
+        scan-type: 'fs'
+        scan-ref: '.'
+        format: 'sarif'
+        output: 'trivy-results.sarif'
+        
+    - name: 📤 Upload Trivy Results
+      uses: github/codeql-action/upload-sarif@v2
+      with:
+        sarif_file: 'trivy-results.sarif'
+        
+    - name: 🛡️ Supply Chain Security
+      uses: anchore/sbom-action@v0
+      with:
+        path: ./
+        format: spdx-json
+
+  docs:
+    name: 📚 Documentation
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: 📥 Checkout Code
+      uses: actions/checkout@v4
+      
+    - name: 🐹 Setup Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: ${{ env.GO_VERSION }}
+        
+    - name: 📚 Generate Documentation
+      run: |
+        go build -o supershell ./cmd/supershell
+        ./supershell -c "dev docs --format html --output ./docs/"
+        
+    - name: 🌐 Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./docs/html
+
+  release:
+    name: 🚀 Release
+    runs-on: ubuntu-latest
+    needs: [test, build, cross-compile, integration-test, security-scan]
+    if: github.event_name == 'release'
+    
+    steps:
+    - name: 📥 Checkout Code
+      uses: actions/checkout@v4
+      
+    - name: 📥 Download All Artifacts
+      uses: actions/download-artifact@v3
+      
+    - name: 📦 Prepare Release Assets
+      run: |
+        mkdir -p release
+        
+        # Package binaries with checksums
+        for dir in supershell-*; do
+          if [ -d "$dir" ]; then
+            cd "$dir"
+            binary=$(ls supershell-*)
+            chmod +x "$binary" 2>/dev/null || true
+            
+            # Create archive
+            if [[ "$binary" == *".exe" ]]; then
+              zip "../release/${binary%.exe}.zip" "$binary"
+            else
+              tar -czf "../release/${binary}.tar.gz" "$binary"
+            fi
+            
+            # Generate checksum
+            sha256sum "$binary" > "../release/${binary}.sha256"
+            cd ..
+          fi
+        done
+        
+    - name: 📋 Generate Release Notes
+      run: |
+        echo "## 🚀 SuperShell Release ${{ github.ref_name }}" > release_notes.md
+        echo "" >> release_notes.md
+        echo "### ✨ Features" >> release_notes.md
+        echo "- 🤖 Agent OS Integration" >> release_notes.md
+        echo "- 🌐 Advanced Networking Tools" >> release_notes.md
+        echo "- ⚡ Performance Optimization" >> release_notes.md
+        echo "- 🔥 Hot Reload Development" >> release_notes.md
+        echo "" >> release_notes.md
+        echo "### 📦 Downloads" >> release_notes.md
+        echo "Choose the binary for your platform:" >> release_notes.md
+        echo "" >> release_notes.md
+        echo "| Platform | Architecture | Download |" >> release_notes.md
+        echo "|----------|--------------|----------|" >> release_notes.md
+        
+        for file in release/supershell-*; do
+          if [[ "$file" != *.sha256 ]]; then
+            filename=$(basename "$file")
+            platform=$(echo "$filename" | cut -d'-' -f2)
+            arch=$(echo "$filename" | cut -d'-' -f3 | cut -d'.' -f1)
+            echo "| $platform | $arch | [$filename]($file) |" >> release_notes.md
+          fi
+        done
+        
+    - name: 🚀 Create Release
+      uses: softprops/action-gh-release@v1
+      with:
+        body_path: release_notes.md
+        files: |
+          release/*
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  notify:
+    name: 📢 Notifications
+    runs-on: ubuntu-latest
+    needs: [test, build]
+    if: always()
+    
+    steps:
+    - name: 📢 Success Notification
+      if: needs.test.result == 'success' && needs.build.result == 'success'
+      run: |
+        echo "## ✅ SuperShell Build Successful!" >> $GITHUB_STEP_SUMMARY
+        echo "All tests passed and builds completed successfully." >> $GITHUB_STEP_SUMMARY
+        echo "🚀 Ready for deployment!" >> $GITHUB_STEP_SUMMARY
+        
+    - name: 📢 Failure Notification
+      if: needs.test.result == 'failure' || needs.build.result == 'failure'
+      run: |
+        echo "## ❌ SuperShell Build Failed!" >> $GITHUB_STEP_SUMMARY
+        echo "Please check the logs and fix the issues." >> $GITHUB_STEP_SUMMARY
+        exit 1 
