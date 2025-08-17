@@ -1,0 +1,130 @@
+[
+  {
+    "id": 1,
+    "command": "history",
+    "timestamp": "2025-08-17T14:42:12.437168-05:00",
+    "directory": "E:\\code\\suppercommand",
+    "exit_code": 0,
+    "duration_ms": 0,
+    "tags": [],
+    "category": "help"
+  },
+  {
+    "id": 2,
+    "command": "'ls -la'",
+    "timestamp": "2025-08-17T14:42:20.0464785-05:00",
+    "directory": ".",
+    "exit_code": 0,
+    "duration_ms": 0,
+    "tags": [],
+    "category": "other"
+  },
+  {
+    "id": 3,
+    "command": "history add 'ls -la'",
+    "timestamp": "2025-08-17T14:42:20.0593842-05:00",
+    "directory": "E:\\code\\suppercommand",
+    "exit_code": 0,
+    "duration_ms": 1,
+    "tags": [
+      "file-listing"
+    ],
+    "category": "help"
+  },
+  {
+    "id": 4,
+    "command": "'git status'",
+    "timestamp": "2025-08-17T14:42:31.2632796-05:00",
+    "directory": ".",
+    "exit_code": 0,
+    "duration_ms": 0,
+    "tags": [],
+    "category": "other"
+  },
+  {
+    "id": 5,
+    "command": "history add 'git status'",
+    "timestamp": "2025-08-17T14:42:31.2809888-05:00",
+    "directory": "E:\\code\\suppercommand",
+    "exit_code": 0,
+    "duration_ms": 0,
+    "tags": [
+      "version-control"
+    ],
+    "category": "help"
+  },
+  {
+    "id": 6,
+    "command": "'ping google.com'",
+    "timestamp": "2025-08-17T14:42:39.5198902-05:00",
+    "directory": ".",
+    "exit_code": 0,
+    "duration_ms": 0,
+    "tags": [],
+    "category": "other"
+  },
+  {
+    "id": 7,
+    "command": "history add 'ping google.com'",
+    "timestamp": "2025-08-17T14:42:39.536248-05:00",
+    "directory": "E:\\code\\suppercommand",
+    "exit_code": 0,
+    "duration_ms": 0,
+    "tags": [
+      "network-diagnostics"
+    ],
+    "category": "help"
+  },
+  {
+    "id": 8,
+    "command": "history",
+    "timestamp": "2025-08-17T14:42:46.0499692-05:00",
+    "directory": "E:\\code\\suppercommand",
+    "exit_code": 0,
+    "duration_ms": 0,
+    "tags": [],
+    "category": "help"
+  },
+  {
+    "id": 9,
+    "command": "history smart git",
+    "timestamp": "2025-08-17T14:42:55.5172935-05:00",
+    "directory": "E:\\code\\suppercommand",
+    "exit_code": 0,
+    "duration_ms": 0,
+    "tags": [
+      "version-control"
+    ],
+    "category": "help"
+  },
+  {
+    "id": 10,
+    "command": "history patterns",
+    "timestamp": "2025-08-17T14:43:04.8557865-05:00",
+    "directory": "E:\\code\\suppercommand",
+    "exit_code": 0,
+    "duration_ms": 0,
+    "tags": [],
+    "category": "help"
+  },
+  {
+    "id": 11,
+    "command": "history suggest",
+    "timestamp": "2025-08-17T14:43:11.830273-05:00",
+    "directory": "E:\\code\\suppercommand",
+    "exit_code": 0,
+    "duration_ms": 0,
+    "tags": [],
+    "category": "help"
+  },
+  {
+    "id": 12,
+    "command": "history stats",
+    "timestamp": "2025-08-17T14:43:21.0293669-05:00",
+    "directory": "E:\\code\\suppercommand",
+    "exit_code": 0,
+    "duration_ms": 0,
+    "tags": [],
+    "category": "help"
+  }
+]

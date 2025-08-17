@@ -1,0 +1,3539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SuperShell Command Reference</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        /* Side Navigation */
+        .sidebar {
+            width: 300px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-right: 1px solid rgba(0, 0, 0, 0.1);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 1000;
+            transition: transform 0.3s ease;
+        }
+        
+        .sidebar-header {
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+        }
+        
+        .sidebar-header h1 {
+            font-size: 1.5em;
+            margin-bottom: 5px;
+        }
+        
+        .sidebar-header .version {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+        
+        .search-box {
+            padding: 15px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+        
+        .search-input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .nav-section {
+            margin-bottom: 10px;
+        }
+        
+        .nav-section-title {
+            padding: 15px 20px 10px;
+            font-weight: 600;
+            color: #333;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        .nav-item {
+            display: block;
+            padding: 12px 20px;
+            color: #555;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+        
+        .nav-item:hover {
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+            border-left-color: #667eea;
+        }
+        
+        .nav-item.active {
+            background: rgba(102, 126, 234, 0.15);
+            color: #667eea;
+            border-left-color: #667eea;
+            font-weight: 500;
+        }
+        
+        .nav-item .emoji {
+            margin-right: 8px;
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 300px;
+            padding: 0;
+            background: white;
+            min-height: 100vh;
+        }
+        
+        .content-header {
+            background: white;
+            padding: 30px 40px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+        
+        .content-header h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .content-header .subtitle {
+            color: #7f8c8d;
+            font-size: 1.1em;
+        }
+        
+        .content-body {
+            padding: 40px;
+        }
+        
+        .category-section {
+            margin-bottom: 60px;
+        }
+        
+        .category-title {
+            font-size: 2em;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #667eea;
+            display: flex;
+            align-items: center;
+        }
+        
+        .category-title .emoji {
+            margin-right: 15px;
+            font-size: 1.2em;
+        }
+        
+        .command-card {
+            background: white;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .command-card:hover {
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .command-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        
+        .command-name {
+            font-size: 1.4em;
+            font-weight: 600;
+            color: #667eea;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+        }
+        
+        .command-badges {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 500;
+        }
+        
+        .badge-admin {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .badge-platform {
+            background: #3498db;
+            color: white;
+        }
+        
+        .command-description {
+            color: #555;
+            font-size: 1.1em;
+            margin-bottom: 20px;
+            line-height: 1.7;
+        }
+        
+        .command-usage {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px 20px;
+            border-radius: 8px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.95em;
+            margin-bottom: 20px;
+            position: relative;
+            overflow-x: auto;
+        }
+        
+        .copy-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8em;
+            transition: background 0.3s ease;
+        }
+        
+        .copy-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 20px;
+        }
+        
+        .tab {
+            padding: 12px 20px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 0.95em;
+            color: #666;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+            font-weight: 500;
+        }
+        
+        .tab:hover {
+            color: #667eea;
+            background: rgba(102, 126, 234, 0.05);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .options-grid {
+            display: grid;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .option-item {
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .option-flag {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            background: #e9ecef;
+            padding: 3px 8px;
+            border-radius: 4px;
+            color: #2c3e50;
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+        
+        .option-description {
+            margin-top: 8px;
+            color: #555;
+            line-height: 1.6;
+        }
+        
+        .examples-grid {
+            display: grid;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .example-item {
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #27ae60;
+        }
+        
+        .example-command {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 12px 16px;
+            border-radius: 6px;
+            margin-bottom: 12px;
+            font-size: 0.9em;
+            position: relative;
+        }
+        
+        .example-description {
+            color: #555;
+            line-height: 1.6;
+        }
+        
+        .use-cases-grid {
+            display: grid;
+            gap: 15px;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        }
+        
+        .use-case-item {
+            padding: 20px;
+            background: #fff3cd;
+            border-radius: 8px;
+            border-left: 4px solid #f39c12;
+        }
+        
+        .use-case-title {
+            font-weight: 600;
+            color: #d68910;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        .use-case-description {
+            color: #555;
+            line-height: 1.6;
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                width: 280px;
+            }
+            
+            .sidebar.open {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+                position: fixed;
+                top: 20px;
+                left: 20px;
+                z-index: 1001;
+                background: #667eea;
+                color: white;
+                border: none;
+                padding: 10px;
+                border-radius: 8px;
+                cursor: pointer;
+            }
+            
+            .content-header {
+                padding: 20px;
+                padding-left: 70px;
+            }
+            
+            .content-body {
+                padding: 20px;
+            }
+            
+            .use-cases-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+        }
+        
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        /* Custom scrollbar */
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .sidebar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        
+        .sidebar::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 3px;
+        }
+        
+        .sidebar::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
+        
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h1>🚀 SuperShell</h1>
+                <div class="version">Command Reference v2.0</div>
+            </div>
+            
+            <div class="search-box">
+                <input type="text" class="search-input" placeholder="Search commands..." onkeyup="filterCommands(this.value)">
+            </div>
+            
+            <div class="nav-sections" id="navSections">
+                <div class="nav-section">
+                    <div class="nav-section-title">🔥 Security & Firewall</div>
+                    <a href="#firewall" class="nav-item" data-category="security"><span class="emoji">🛡️</span>firewall</a>
+                </div>
+                
+                <div class="nav-section">
+                    <div class="nav-section-title">⚡ Performance</div>
+                    <a href="#perf" class="nav-item" data-category="performance"><span class="emoji">📊</span>perf</a>
+                </div>
+                
+                <div class="nav-section">
+                    <div class="nav-section-title">🖥️ Server Management</div>
+                    <a href="#server" class="nav-item" data-category="server"><span class="emoji">🖥️</span>server</a>
+                    <a href="#sysinfo" class="nav-item" data-category="server"><span class="emoji">ℹ️</span>sysinfo</a>
+                    <a href="#killtask" class="nav-item" data-category="server"><span class="emoji">⚡</span>killtask</a>
+                    <a href="#winupdate" class="nav-item" data-category="server"><span class="emoji">🔄</span>winupdate</a>
+                </div>
+                
+                <div class="nav-section">
+                    <div class="nav-section-title">🌐 Remote Administration</div>
+                    <a href="#remote" class="nav-item" data-category="remote"><span class="emoji">🌐</span>remote</a>
+                </div>
+                
+                <div class="nav-section">
+                    <div class="nav-section-title">🌐 Network Tools</div>
+                    <a href="#ping" class="nav-item" data-category="network"><span class="emoji">📡</span>ping</a>
+                    <a href="#tracert" class="nav-item" data-category="network"><span class="emoji">🛤️</span>tracert</a>
+                    <a href="#nslookup" class="nav-item" data-category="network"><span class="emoji">🔍</span>nslookup</a>
+                    <a href="#netstat" class="nav-item" data-category="network"><span class="emoji">📊</span>netstat</a>
+                    <a href="#portscan" class="nav-item" data-category="network"><span class="emoji">🔍</span>portscan</a>
+                    <a href="#sniff" class="nav-item" data-category="network"><span class="emoji">👁️</span>sniff</a>
+                    <a href="#wget" class="nav-item" data-category="network"><span class="emoji">⬇️</span>wget</a>
+                    <a href="#arp" class="nav-item" data-category="network"><span class="emoji">🔗</span>arp</a>
+                    <a href="#route" class="nav-item" data-category="network"><span class="emoji">🛣️</span>route</a>
+                    <a href="#speedtest" class="nav-item" data-category="network"><span class="emoji">⚡</span>speedtest</a>
+                    <a href="#ipconfig" class="nav-item" data-category="network"><span class="emoji">🌐</span>ipconfig</a>
+                    <a href="#netdiscover" class="nav-item" data-category="network"><span class="emoji">🔍</span>netdiscover</a>
+                </div>
+                
+                <div class="nav-section">
+                    <div class="nav-section-title">📁 File Operations</div>
+                    <a href="#ls" class="nav-item" data-category="files"><span class="emoji">📋</span>ls</a>
+                    <a href="#dir" class="nav-item" data-category="files"><span class="emoji">📁</span>dir</a>
+                    <a href="#cat" class="nav-item" data-category="files"><span class="emoji">📄</span>cat</a>
+                    <a href="#cp" class="nav-item" data-category="files"><span class="emoji">📋</span>cp</a>
+                    <a href="#mv" class="nav-item" data-category="files"><span class="emoji">➡️</span>mv</a>
+                    <a href="#rm" class="nav-item" data-category="files"><span class="emoji">🗑️</span>rm</a>
+                    <a href="#mkdir" class="nav-item" data-category="files"><span class="emoji">📁</span>mkdir</a>
+                    <a href="#rmdir" class="nav-item" data-category="files"><span class="emoji">🗂️</span>rmdir</a>
+                    <a href="#pwd" class="nav-item" data-category="files"><span class="emoji">📍</span>pwd</a>
+                    <a href="#cd" class="nav-item" data-category="files"><span class="emoji">📂</span>cd</a>
+                </div>
+                
+                <div class="nav-section">
+                    <div class="nav-section-title">⚙️ System Information</div>
+                    <a href="#whoami" class="nav-item" data-category="system"><span class="emoji">👤</span>whoami</a>
+                    <a href="#hostname" class="nav-item" data-category="system"><span class="emoji">🏷️</span>hostname</a>
+                    <a href="#ver" class="nav-item" data-category="system"><span class="emoji">ℹ️</span>ver</a>
+                    <a href="#clear" class="nav-item" data-category="system"><span class="emoji">🧹</span>clear</a>
+                    <a href="#echo" class="nav-item" data-category="system"><span class="emoji">📢</span>echo</a>
+                </div>
+                
+                <div class="nav-section">
+                    <div class="nav-section-title">🔍 Help & Discovery</div>
+                    <a href="#help" class="nav-item" data-category="help"><span class="emoji">❓</span>help</a>
+                    <a href="#lookup" class="nav-item" data-category="help"><span class="emoji">🔍</span>lookup</a>
+                    <a href="#helphtml" class="nav-item" data-category="help"><span class="emoji">📄</span>helphtml</a>
+                    <a href="#exit" class="nav-item" data-category="help"><span class="emoji">🚪</span>exit</a>
+                </div>
+                
+                <div class="nav-section">
+                    <div class="nav-section-title">🚀 FastCP Transfer</div>
+                    <a href="#fastcp-send" class="nav-item" data-category="fastcp"><span class="emoji">📤</span>fastcp-send</a>
+                    <a href="#fastcp-recv" class="nav-item" data-category="fastcp"><span class="emoji">📥</span>fastcp-recv</a>
+                    <a href="#fastcp-backup" class="nav-item" data-category="fastcp"><span class="emoji">💾</span>fastcp-backup</a>
+                    <a href="#fastcp-restore" class="nav-item" data-category="fastcp"><span class="emoji">♻️</span>fastcp-restore</a>
+                    <a href="#fastcp-dedup" class="nav-item" data-category="fastcp"><span class="emoji">🔄</span>fastcp-dedup</a>
+                </div>
+            </div>
+        </nav>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="content-header">
+                <h1>SuperShell Command Reference</h1>
+                <div class="subtitle">
+                    Comprehensive documentation for all SuperShell commands<br>
+                    Generated on August 17, 2025 at 1:34 PM
+                </div>
+            </div>
+            
+            <div class="content-body" id="contentBody">
+
+                <section class="category-section" id="category-security-&-firewall">
+                    <h2 class="category-title">
+                        <span class="emoji">🔥</span>Security & Firewall
+                    </h2>
+
+                    <div class="command-card" id="firewall">
+                        <div class="command-header">
+                            <div class="command-name">firewall</div>
+                            <div class="command-badges"><span class="badge badge-platform">windows, linux, darwin</span></div>
+                        </div>
+                        <div class="command-description">Manage Windows firewall settings</div>
+                        <div class="command-usage">
+                            <button class="copy-button" onclick="copyToClipboard('firewall [status|enable|disable|rules] [options]')">Copy</button>
+                            firewall [status|enable|disable|rules] [options]
+                        </div>
+                        
+                        <div class="tabs">
+                            <button class="tab" onclick="showTab('options', 'firewall')">Options</button>
+                            <button class="tab" onclick="showTab('examples', 'firewall')">Examples</button>
+                            <button class="tab" onclick="showTab('usecases', 'firewall')">Use Cases</button>
+                        </div>
+                        
+                        <div class="tab-content options-content">
+                            <div class="options-grid">
+                                
+                                <div class="option-item">
+                                    <div class="option-flag">status</div>
+                                    <div class="option-description">Show current firewall status and configuration</div>
+                                </div>
+                                <div class="option-item">
+                                    <div class="option-flag">enable</div>
+                                    <div class="option-description">Enable the system firewall (requires admin privileges)</div>
+                                </div>
+                                <div class="option-item">
+                                    <div class="option-flag">disable</div>
+                                    <div class="option-description">Disable the system firewall (requires admin privileges)</div>
+                                </div>
+                                <div class="option-item">
+                                    <div class="option-flag">rules list</div>
+                                    <div class="option-description">List all configured firewall rules</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content examples-content">
+                            <div class="examples-grid">
+                                
+                                <div class="example-item">
+                                    <div class="example-command">firewall status</div>
+                                    <div class="example-description">Check if firewall is enabled and show basic info</div>
+                                </div>
+                                <div class="example-item">
+                                    <div class="example-command">firewall enable</div>
+                                    <div class="example-description">Enable Windows Defender Firewall</div>
+                                </div>
+                                <div class="example-item">
+                                    <div class="example-command">firewall rules list</div>
+                                    <div class="example-description">List all configured firewall rules</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content usecases-content">
+                            <div class="use-cases-grid">
+                                
+                                <div class="use-case-item">
+                                    <div class="use-case-title">Security Management</div>
+                                    <div class="use-case-description">Monitor and control system firewall settings</div>
+                                </div>
+                                <div class="use-case-item">
+                                    <div class="use-case-title">Compliance Checking</div>
+                                    <div class="use-case-description">Verify firewall status for security audits</div>
+                                </div>
+                                <div class="use-case-item">
+                                    <div class="use-case-title">Troubleshooting</div>
+                                    <div class="use-case-description">Diagnose network connectivity issues</div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
+
+                <section class="category-section" id="category-performance-monitoring">
+                    <h2 class="category-title">
+                        <span class="emoji">⚡</span>Performance Monitoring
+                    </h2>
+
+                    <div class="command-card" id="perf">
+                        <div class="command-header">
+                            <div class="command-name">perf</div>
+                            <div class="command-badges"><span class="badge badge-platform">windows, linux, darwin</span></div>
+                        </div>
+                        <div class="command-description">Performance monitoring and analysis</div>
+                        <div class="command-usage">
+                            <button class="copy-button" onclick="copyToClipboard('perf [analyze|monitor|report|baseline] [options]')">Copy</button>
+                            perf [analyze|monitor|report|baseline] [options]
+                        </div>
+                        
+                        <div class="tabs">
+                            <button class="tab" onclick="showTab('options', 'perf')">Options</button>
+                            <button class="tab" onclick="showTab('examples', 'perf')">Examples</button>
+                            <button class="tab" onclick="showTab('usecases', 'perf')">Use Cases</button>
+                        </div>
+                        
+                        <div class="tab-content options-content">
+                            <div class="options-grid">
+                                
+                                <div class="option-item">
+                                    <div class="option-flag">analyze</div>
+                                    <div class="option-description">Perform comprehensive system performance analysis</div>
+                                </div>
+                                <div class="option-item">
+                                    <div class="option-flag">monitor</div>
+                                    <div class="option-description">Start real-time performance monitoring</div>
+                                </div>
+                                <div class="option-item">
+                                    <div class="option-flag">report</div>
+                                    <div class="option-description">Generate detailed performance report</div>
+                                </div>
+                                <div class="option-item">
+                                    <div class="option-flag">baseline create &lt;name&gt;</div>
+                                    <div class="option-description">Create a new performance baseline</div>
+                                </div>
+                                <div class="option-item">
+                                    <div class="option-flag">baseline list</div>
+                                    <div class="option-description">List all saved baselines</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content examples-content">
+                            <div class="examples-grid">
+                                
+                                <div class="example-item">
+                                    <div class="example-command">perf analyze</div>
+                                    <div class="example-description">Quick performance analysis</div>
+                                </div>
+                                <div class="example-item">
+                                    <div class="example-command">perf baseline create prod-baseline</div>
+                                    <div class="example-description">Create baseline named 'prod-baseline'</div>
+                                </div>
+                                <div class="example-item">
+                                    <div class="example-command">perf report</div>
+                                    <div class="example-description">Generate comprehensive performance report</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content usecases-content">
+                            <div class="use-cases-grid">
+                                
+                                <div class="use-case-item">
+                                    <div class="use-case-title">Performance Monitoring</div>
+                                    <div class="use-case-description">Track system resource usage over time</div>
+                                </div>
+                                <div class="use-case-item">
+                                    <div class="use-case-title">Bottleneck Detection</div>
+                                    <div class="use-case-description">Identify CPU, memory, disk, or network bottlenecks</div>
+                                </div>
+                                <div class="use-case-item">
+                                    <div class="use-case-title">Capacity Planning</div>
+                                    <div class="use-case-description">Understand system limits and plan for scaling</div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
+
+                <section class="category-section" id="category-server-management">
+                    <h2 class="category-title">
+                        <span class="emoji">🖥️</span>Server Management
+                    </h2>
+
+                    <div class="command-card" id="sysinfo">
+                        <div class="command-header">
+                            <div class="command-name">sysinfo</div>
+                            <div class="command-badges"><span class="badge badge-platform">windows, linux, darwin</span></div>
+                        </div>
+                        <div class="command-description">Display comprehensive system information</div>
+                        <div class="command-usage">
+                            <button class="copy-button" onclick="copyToClipboard('sysinfo [-v|--verbose]')">Copy</button>
+                            sysinfo [-v|--verbose]
+                        </div>
+                        
+                        <div class="tabs">
+                            <button class="tab" onclick="showTab('options', 'sysinfo')">Options</button>
+                            <button class="tab" onclick="showTab('examples', 'sysinfo')">Examples</button>
+                            <button class="tab" onclick="showTab('usecases', 'sysinfo')">Use Cases</button>
+                        </div>
+                        
+                        <div class="tab-content options-content">
+                            <div class="options-grid">
+                                
+<div class="detailed-help">
+    <div class="options-section">
+        <div class="options-title">🔧 Command Options</div>
+        <div class="option-item">
+            <span class="option-flag">-v, --verbose</span>
+            <span class="option-description">Show detailed system information</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">--cpu</span>
+            <span class="option-description">Show only CPU information</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">--memory</span>
+            <span class="option-description">Show only memory information</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">--disk</span>
+            <span class="option-description">Show only disk information</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">--network</span>
+            <span class="option-description">Show only network information</span>
+        </div>
+    </div>
+    
+    <div class="examples-section">
+        <div class="examples-title">💡 Usage Examples</div>
+        <div class="example-item">
+            <div class="example-command">sysinfo</div>
+            <div class="example-description">Display comprehensive system information</div>
+        </div>
+        <div class="example-item">
+            <div class="example-command">sysinfo -v</div>
+            <div class="example-description">Show detailed verbose system information</div>
+        </div>
+        <div class="example-item">
+            <div class="example-command">sysinfo --cpu</div>
+            <div class="example-description">Show only CPU details and specifications</div>
+        </div>
+        <div class="example-item">
+            <div class="example-command">sysinfo --memory</div>
+            <div class="example-description">Show only memory usage and specifications</div>
+        </div>
+    </div>
+    
+    <div class="use-cases-section">
+        <div class="use-cases-title">🎯 Common Use Cases</div>
+        <div class="use-case-item">
+            <div class="use-case-title">System Monitoring</div>
+            <div class="use-case-description">Monitor system resources, performance, and health status</div>
+        </div>
+        <div class="use-case-item">
+            <div class="use-case-title">Hardware Inventory</div>
+            <div class="use-case-description">Get detailed hardware specifications and system configuration</div>
+        </div>
+        <div class="use-case-item">
+            <div class="use-case-title">Troubleshooting</div>
+            <div class="use-case-description">Diagnose system issues and resource bottlenecks</div>
+        </div>
+    </div>
+</div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content examples-content">
+                            <div class="examples-grid">
+                                <div class="example-item"><div class="example-command">sysinfo</div><div class="example-description">Basic usage example</div></div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content usecases-content">
+                            <div class="use-cases-grid">
+                                <div class="use-case-item"><div class="use-case-title">General Usage</div><div class="use-case-description">Common use cases for this command</div></div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="command-card" id="killtask">
+                        <div class="command-header">
+                            <div class="command-name">killtask</div>
+                            <div class="command-badges"><span class="badge badge-admin">⚠️ Admin Required</span><span class="badge badge-platform">windows, linux, darwin</span></div>
+                        </div>
+                        <div class="command-description">Terminate processes by PID or process name</div>
+                        <div class="command-usage">
+                            <button class="copy-button" onclick="copyToClipboard('killtask [-f] [-t] <pid|process_name> [pid2] [process_name2] ...')">Copy</button>
+                            killtask [-f] [-t] <pid|process_name> [pid2] [process_name2] ...
+                        </div>
+                        
+                        <div class="tabs">
+                            <button class="tab" onclick="showTab('options', 'killtask')">Options</button>
+                            <button class="tab" onclick="showTab('examples', 'killtask')">Examples</button>
+                            <button class="tab" onclick="showTab('usecases', 'killtask')">Use Cases</button>
+                        </div>
+                        
+                        <div class="tab-content options-content">
+                            <div class="options-grid">
+                                
+<div class="detailed-help">
+    <div class="options-section">
+        <div class="options-title">🔧 Command Options</div>
+        <div class="option-item">
+            <span class="option-flag">-f, --force</span>
+            <span class="option-description">Force terminate processes immediately (SIGKILL on Unix)</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">-t, --tree</span>
+            <span class="option-description">Terminate process tree including child processes</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">&lt;pid&gt;</span>
+            <span class="option-description">Process ID to terminate</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">&lt;process_name&gt;</span>
+            <span class="option-description">Process name to terminate (e.g., notepad.exe)</span>
+        </div>
+    </div>
+    
+    <div class="examples-section">
+        <div class="examples-title">💡 Usage Examples</div>
+        <div class="example-item">
+            <div class="example-command">killtask 1234</div>
+            <div class="example-description">Terminate process with PID 1234</div>
+        </div>
+        <div class="example-item">
+            <div class="example-command">killtask notepad</div>
+            <div class="example-description">Terminate all notepad processes</div>
+        </div>
+        <div class="example-item">
+            <div class="example-command">killtask -f chrome</div>
+            <div class="example-description">Force terminate all Chrome processes immediately</div>
+        </div>
+        <div class="example-item">
+            <div class="example-command">killtask -t explorer</div>
+            <div class="example-description">Terminate Explorer and all child processes</div>
+        </div>
+        <div class="example-item">
+            <div class="example-command">killtask 1234 5678 notepad</div>
+            <div class="example-description">Terminate multiple processes in one command</div>
+        </div>
+    </div>
+    
+    <div class="use-cases-section">
+        <div class="use-cases-title">🎯 Common Use Cases</div>
+        <div class="use-case-item">
+            <div class="use-case-title">Process Management</div>
+            <div class="use-case-description">Terminate unresponsive or unwanted processes</div>
+        </div>
+        <div class="use-case-item">
+            <div class="use-case-title">System Cleanup</div>
+            <div class="use-case-description">Clean up multiple processes or process trees</div>
+        </div>
+        <div class="use-case-item">
+            <div class="use-case-title">Security Response</div>
+            <div class="use-case-description">Quickly terminate suspicious or malicious processes</div>
+        </div>
+        <div class="use-case-item">
+            <div class="use-case-title">Resource Management</div>
+            <div class="use-case-description">Free up system resources by terminating resource-heavy processes</div>
+        </div>
+    </div>
+</div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content examples-content">
+                            <div class="examples-grid">
+                                <div class="example-item"><div class="example-command">killtask</div><div class="example-description">Basic usage example</div></div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content usecases-content">
+                            <div class="use-cases-grid">
+                                <div class="use-case-item"><div class="use-case-title">General Usage</div><div class="use-case-description">Common use cases for this command</div></div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="command-card" id="winupdate">
+                        <div class="command-header">
+                            <div class="command-name">winupdate</div>
+                            <div class="command-badges"><span class="badge badge-admin">⚠️ Admin Required</span><span class="badge badge-platform">windows</span></div>
+                        </div>
+                        <div class="command-description">Windows Update management and information</div>
+                        <div class="command-usage">
+                            <button class="copy-button" onclick="copyToClipboard('winupdate [list|check|install|history] [--auto] [--reboot]')">Copy</button>
+                            winupdate [list|check|install|history] [--auto] [--reboot]
+                        </div>
+                        
+                        <div class="tabs">
+                            <button class="tab" onclick="showTab('options', 'winupdate')">Options</button>
+                            <button class="tab" onclick="showTab('examples', 'winupdate')">Examples</button>
+                            <button class="tab" onclick="showTab('usecases', 'winupdate')">Use Cases</button>
+                        </div>
+                        
+                        <div class="tab-content options-content">
+                            <div class="options-grid">
+                                
+<div class="detailed-help">
+    <div class="examples-section">
+        <div class="examples-title">💡 Basic Usage</div>
+        <div class="example-item">
+            <div class="example-description">This command provides essential functionality for SuperShell operations. Use the command with its available options as shown in the usage syntax above.</div>
+        </div>
+    </div>
+</div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content examples-content">
+                            <div class="examples-grid">
+                                <div class="example-item"><div class="example-command">winupdate</div><div class="example-description">Basic usage example</div></div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content usecases-content">
+                            <div class="use-cases-grid">
+                                <div class="use-case-item"><div class="use-case-title">General Usage</div><div class="use-case-description">Common use cases for this command</div></div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="command-card" id="server">
+                        <div class="command-header">
+                            <div class="command-name">server</div>
+                            <div class="command-badges"><span class="badge badge-platform">windows, linux, darwin</span></div>
+                        </div>
+                        <div class="command-description">Server management and monitoring</div>
+                        <div class="command-usage">
+                            <button class="copy-button" onclick="copyToClipboard('server [health|services|users|alerts|backup] [options]')">Copy</button>
+                            server [health|services|users|alerts|backup] [options]
+                        </div>
+                        
+                        <div class="tabs">
+                            <button class="tab" onclick="showTab('options', 'server')">Options</button>
+                            <button class="tab" onclick="showTab('examples', 'server')">Examples</button>
+                            <button class="tab" onclick="showTab('usecases', 'server')">Use Cases</button>
+                        </div>
+                        
+                        <div class="tab-content options-content">
+                            <div class="options-grid">
+                                
+                                <div class="option-item">
+                                    <div class="option-flag">health</div>
+                                    <div class="option-description">Check overall server health status</div>
+                                </div>
+                                <div class="option-item">
+                                    <div class="option-flag">services list</div>
+                                    <div class="option-description">List all system services</div>
+                                </div>
+                                <div class="option-item">
+                                    <div class="option-flag">services start &lt;name&gt;</div>
+                                    <div class="option-description">Start a specific service (requires admin)</div>
+                                </div>
+                                <div class="option-item">
+                                    <div class="option-flag">services stop &lt;name&gt;</div>
+                                    <div class="option-description">Stop a specific service (requires admin)</div>
+                                </div>
+                                <div class="option-item">
+                                    <div class="option-flag">users</div>
+                                    <div class="option-description">List all active users and sessions</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content examples-content">
+                            <div class="examples-grid">
+                                
+                                <div class="example-item">
+                                    <div class="example-command">server health</div>
+                                    <div class="example-description">Check overall server health</div>
+                                </div>
+                                <div class="example-item">
+                                    <div class="example-command">server services list</div>
+                                    <div class="example-description">List all system services</div>
+                                </div>
+                                <div class="example-item">
+                                    <div class="example-command">server services start "Print Spooler"</div>
+                                    <div class="example-description">Start the Print Spooler service</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content usecases-content">
+                            <div class="use-cases-grid">
+                                
+                                <div class="use-case-item">
+                                    <div class="use-case-title">System Administration</div>
+                                    <div class="use-case-description">Monitor and manage server components</div>
+                                </div>
+                                <div class="use-case-item">
+                                    <div class="use-case-title">Service Management</div>
+                                    <div class="use-case-description">Control Windows/Linux services remotely</div>
+                                </div>
+                                <div class="use-case-item">
+                                    <div class="use-case-title">Health Monitoring</div>
+                                    <div class="use-case-description">Get real-time server health status</div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
+
+                <section class="category-section" id="category-remote-administration">
+                    <h2 class="category-title">
+                        <span class="emoji">🌐</span>Remote Administration
+                    </h2>
+
+                    <div class="command-card" id="remote">
+                        <div class="command-header">
+                            <div class="command-name">remote</div>
+                            <div class="command-badges"><span class="badge badge-platform">windows, linux, darwin</span></div>
+                        </div>
+                        <div class="command-description">Remote server management</div>
+                        <div class="command-usage">
+                            <button class="copy-button" onclick="copyToClipboard('remote [list|add|remove|exec] [options]')">Copy</button>
+                            remote [list|add|remove|exec] [options]
+                        </div>
+                        
+                        <div class="tabs">
+                            <button class="tab" onclick="showTab('options', 'remote')">Options</button>
+                            <button class="tab" onclick="showTab('examples', 'remote')">Examples</button>
+                            <button class="tab" onclick="showTab('usecases', 'remote')">Use Cases</button>
+                        </div>
+                        
+                        <div class="tab-content options-content">
+                            <div class="options-grid">
+                                
+                                <div class="option-item">
+                                    <div class="option-flag">list</div>
+                                    <div class="option-description">List all configured remote servers</div>
+                                </div>
+                                <div class="option-item">
+                                    <div class="option-flag">add &lt;name&gt; &lt;user@host&gt;</div>
+                                    <div class="option-description">Add a new remote server configuration</div>
+                                </div>
+                                <div class="option-item">
+                                    <div class="option-flag">remove &lt;name&gt;</div>
+                                    <div class="option-description">Remove a remote server configuration</div>
+                                </div>
+                                <div class="option-item">
+                                    <div class="option-flag">exec &lt;server&gt; "&lt;command&gt;"</div>
+                                    <div class="option-description">Execute command on remote server</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content examples-content">
+                            <div class="examples-grid">
+                                
+                                <div class="example-item">
+                                    <div class="example-command">remote add web1 admin@192.168.1.10</div>
+                                    <div class="example-description">Add server with default settings</div>
+                                </div>
+                                <div class="example-item">
+                                    <div class="example-command">remote exec web1 "uptime"</div>
+                                    <div class="example-description">Check uptime on web1 server</div>
+                                </div>
+                                <div class="example-item">
+                                    <div class="example-command">remote list</div>
+                                    <div class="example-description">List all configured servers</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content usecases-content">
+                            <div class="use-cases-grid">
+                                
+                                <div class="use-case-item">
+                                    <div class="use-case-title">Remote Administration</div>
+                                    <div class="use-case-description">Manage multiple servers from one location</div>
+                                </div>
+                                <div class="use-case-item">
+                                    <div class="use-case-title">Command Execution</div>
+                                    <div class="use-case-description">Run commands across multiple servers</div>
+                                </div>
+                                <div class="use-case-item">
+                                    <div class="use-case-title">Deployment Management</div>
+                                    <div class="use-case-description">Execute deployment scripts remotely</div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
+
+                <section class="category-section" id="category-network-tools">
+                    <h2 class="category-title">
+                        <span class="emoji">🌐</span>Network Tools
+                    </h2>
+
+                    <div class="command-card" id="arp">
+                        <div class="command-header">
+                            <div class="command-name">arp</div>
+                            <div class="command-badges"><span class="badge badge-platform">windows, linux, darwin</span></div>
+                        </div>
+                        <div class="command-description">Display and manage ARP table</div>
+                        <div class="command-usage">
+                            <button class="copy-button" onclick="copyToClipboard('arp [-a] [-d <ip>] [ip_address]')">Copy</button>
+                            arp [-a] [-d <ip>] [ip_address]
+                        </div>
+                        
+                        <div class="tabs">
+                            <button class="tab" onclick="showTab('options', 'arp')">Options</button>
+                            <button class="tab" onclick="showTab('examples', 'arp')">Examples</button>
+                            <button class="tab" onclick="showTab('usecases', 'arp')">Use Cases</button>
+                        </div>
+                        
+                        <div class="tab-content options-content">
+                            <div class="options-grid">
+                                
+<div class="detailed-help">
+    <div class="options-section">
+        <div class="options-title">🔧 Command Options</div>
+        <div class="option-item">
+            <span class="option-flag">-a, --all</span>
+            <span class="option-description">Show all ARP entries in the table</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">-d, --delete &lt;ip&gt;</span>
+            <span class="option-description">Delete ARP entry for specified IP address</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">[ip_address]</span>
+            <span class="option-description">Show ARP entry for specific IP address</span>
+        </div>
+    </div>
+    
+    <div class="examples-section">
+        <div class="examples-title">💡 Usage Examples</div>
+        <div class="example-item">
+            <div class="example-command">arp -a</div>
+            <div class="example-description">Display all ARP entries with MAC addresses and types</div>
+        </div>
+        <div class="example-item">
+            <div class="example-command">arp 192.168.1.1</div>
+            <div class="example-description">Show ARP entry for the gateway router</div>
+        </div>
+        <div class="example-item">
+            <div class="example-command">arp -d 192.168.1.100</div>
+            <div class="example-description">Delete ARP entry for a specific host</div>
+        </div>
+    </div>
+    
+    <div class="use-cases-section">
+        <div class="use-cases-title">🎯 Common Use Cases</div>
+        <div class="use-case-item">
+            <div class="use-case-title">Network Troubleshooting</div>
+            <div class="use-case-description">Resolve IP-to-MAC address mapping issues and connectivity problems</div>
+        </div>
+        <div class="use-case-item">
+            <div class="use-case-title">Security Monitoring</div>
+            <div class="use-case-description">Detect ARP spoofing attacks and unauthorized devices on the network</div>
+        </div>
+        <div class="use-case-item">
+            <div class="use-case-title">Network Discovery</div>
+            <div class="use-case-description">Identify active devices and their MAC addresses on the local network</div>
+        </div>
+    </div>
+</div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content examples-content">
+                            <div class="examples-grid">
+                                <div class="example-item"><div class="example-command">arp</div><div class="example-description">Basic usage example</div></div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content usecases-content">
+                            <div class="use-cases-grid">
+                                <div class="use-case-item"><div class="use-case-title">General Usage</div><div class="use-case-description">Common use cases for this command</div></div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="command-card" id="nslookup">
+                        <div class="command-header">
+                            <div class="command-name">nslookup</div>
+                            <div class="command-badges"><span class="badge badge-platform">windows, linux, darwin</span></div>
+                        </div>
+                        <div class="command-description">Query DNS records for a domain with enhanced output</div>
+                        <div class="command-usage">
+                            <button class="copy-button" onclick="copyToClipboard('nslookup <domain> [server]')">Copy</button>
+                            nslookup <domain> [server]
+                        </div>
+                        
+                        <div class="tabs">
+                            <button class="tab" onclick="showTab('options', 'nslookup')">Options</button>
+                            <button class="tab" onclick="showTab('examples', 'nslookup')">Examples</button>
+                            <button class="tab" onclick="showTab('usecases', 'nslookup')">Use Cases</button>
+                        </div>
+                        
+                        <div class="tab-content options-content">
+                            <div class="options-grid">
+                                
+<div class="detailed-help">
+    <div class="examples-section">
+        <div class="examples-title">💡 Basic Usage</div>
+        <div class="example-item">
+            <div class="example-description">This command provides essential functionality for SuperShell operations. Use the command with its available options as shown in the usage syntax above.</div>
+        </div>
+    </div>
+</div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content examples-content">
+                            <div class="examples-grid">
+                                <div class="example-item"><div class="example-command">nslookup</div><div class="example-description">Basic usage example</div></div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content usecases-content">
+                            <div class="use-cases-grid">
+                                <div class="use-case-item"><div class="use-case-title">General Usage</div><div class="use-case-description">Common use cases for this command</div></div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="command-card" id="netdiscover">
+                        <div class="command-header">
+                            <div class="command-name">netdiscover</div>
+                            <div class="command-badges"><span class="badge badge-platform">windows, linux, darwin</span></div>
+                        </div>
+                        <div class="command-description">Discover live hosts on a subnet</div>
+                        <div class="command-usage">
+                            <button class="copy-button" onclick="copyToClipboard('netdiscover [-r <range>] [-t <timeout>] [-p] [--passive]')">Copy</button>
+                            netdiscover [-r <range>] [-t <timeout>] [-p] [--passive]
+                        </div>
+                        
+                        <div class="tabs">
+                            <button class="tab" onclick="showTab('options', 'netdiscover')">Options</button>
+                            <button class="tab" onclick="showTab('examples', 'netdiscover')">Examples</button>
+                            <button class="tab" onclick="showTab('usecases', 'netdiscover')">Use Cases</button>
+                        </div>
+                        
+                        <div class="tab-content options-content">
+                            <div class="options-grid">
+                                
+<div class="detailed-help">
+    <div class="examples-section">
+        <div class="examples-title">💡 Basic Usage</div>
+        <div class="example-item">
+            <div class="example-description">This command provides essential functionality for SuperShell operations. Use the command with its available options as shown in the usage syntax above.</div>
+        </div>
+    </div>
+</div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content examples-content">
+                            <div class="examples-grid">
+                                <div class="example-item"><div class="example-command">netdiscover</div><div class="example-description">Basic usage example</div></div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content usecases-content">
+                            <div class="use-cases-grid">
+                                <div class="use-case-item"><div class="use-case-title">General Usage</div><div class="use-case-description">Common use cases for this command</div></div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="command-card" id="portscan">
+                        <div class="command-header">
+                            <div class="command-name">portscan</div>
+                            <div class="command-badges"><span class="badge badge-platform">windows, linux, darwin</span></div>
+                        </div>
+                        <div class="command-description">Fast TCP port scanner with live feedback</div>
+                        <div class="command-usage">
+                            <button class="copy-button" onclick="copyToClipboard('portscan [-p ports] [-t timeout] [-c concurrency] <host>')">Copy</button>
+                            portscan [-p ports] [-t timeout] [-c concurrency] <host>
+                        </div>
+                        
+                        <div class="tabs">
+                            <button class="tab" onclick="showTab('options', 'portscan')">Options</button>
+                            <button class="tab" onclick="showTab('examples', 'portscan')">Examples</button>
+                            <button class="tab" onclick="showTab('usecases', 'portscan')">Use Cases</button>
+                        </div>
+                        
+                        <div class="tab-content options-content">
+                            <div class="options-grid">
+                                
+<div class="detailed-help">
+    <div class="options-section">
+        <div class="options-title">🔧 Command Options</div>
+        <div class="option-item">
+            <span class="option-flag">&lt;host&gt;</span>
+            <span class="option-description">Target host to scan (IP address or hostname)</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">-p, --ports &lt;range&gt;</span>
+            <span class="option-description">Specific ports (e.g., 80,443,22-25)</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">-t, --timeout &lt;ms&gt;</span>
+            <span class="option-description">Connection timeout in milliseconds</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">-c, --concurrency &lt;num&gt;</span>
+            <span class="option-description">Number of concurrent connections</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">--top-ports &lt;n&gt;</span>
+            <span class="option-description">Scan top N most common ports</span>
+        </div>
+    </div>
+    
+    <div class="examples-section">
+        <div class="examples-title">💡 Usage Examples</div>
+        <div class="example-item">
+            <div class="example-command">portscan google.com</div>
+            <div class="example-description">Scan common ports on Google's servers</div>
+        </div>
+        <div class="example-item">
+            <div class="example-command">portscan 192.168.1.1 -p 80,443,22</div>
+            <div class="example-description">Scan specific ports on local router</div>
+        </div>
+        <div class="example-item">
+            <div class="example-command">portscan example.com --top-ports 100</div>
+            <div class="example-description">Scan top 100 most common ports</div>
+        </div>
+        <div class="example-item">
+            <div class="example-command">portscan 10.0.0.1 -p 1-1000 -c 50</div>
+            <div class="example-description">Fast scan of ports 1-1000 with high concurrency</div>
+        </div>
+    </div>
+    
+    <div class="use-cases-section">
+        <div class="use-cases-title">🎯 Common Use Cases</div>
+        <div class="use-case-item">
+            <div class="use-case-title">Security Assessment</div>
+            <div class="use-case-description">Identify open ports and potential security vulnerabilities</div>
+        </div>
+        <div class="use-case-item">
+            <div class="use-case-title">Network Discovery</div>
+            <div class="use-case-description">Discover services running on network hosts</div>
+        </div>
+        <div class="use-case-item">
+            <div class="use-case-title">Service Verification</div>
+            <div class="use-case-description">Verify that services are running on expected ports</div>
+        </div>
+    </div>
+</div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content examples-content">
+                            <div class="examples-grid">
+                                <div class="example-item"><div class="example-command">portscan</div><div class="example-description">Basic usage example</div></div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content usecases-content">
+                            <div class="use-cases-grid">
+                                <div class="use-case-item"><div class="use-case-title">General Usage</div><div class="use-case-description">Common use cases for this command</div></div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="command-card" id="wget">
+                        <div class="command-header">
+                            <div class="command-name">wget</div>
+                            <div class="command-badges"><span class="badge badge-platform">windows, linux, darwin</span></div>
+                        </div>
+                        <div class="command-description">Download files from URLs</div>
+                        <div class="command-usage">
+                            <button class="copy-button" onclick="copyToClipboard('wget [-v] <url> [filename]')">Copy</button>
+                            wget [-v] <url> [filename]
+                        </div>
+                        
+                        <div class="tabs">
+                            <button class="tab" onclick="showTab('options', 'wget')">Options</button>
+                            <button class="tab" onclick="showTab('examples', 'wget')">Examples</button>
+                            <button class="tab" onclick="showTab('usecases', 'wget')">Use Cases</button>
+                        </div>
+                        
+                        <div class="tab-content options-content">
+                            <div class="options-grid">
+                                
+<div class="detailed-help">
+    <div class="options-section">
+        <div class="options-title">🔧 Command Options</div>
+        <div class="option-item">
+            <span class="option-flag">-v, --verbose</span>
+            <span class="option-description">Show detailed download progress and connection information</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">&lt;url&gt;</span>
+            <span class="option-description">URL to download from (required)</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">[filename]</span>
+            <span class="option-description">Optional filename (auto-detected from URL if not provided)</span>
+        </div>
+    </div>
+    
+    <div class="examples-section">
+        <div class="examples-title">💡 Usage Examples</div>
+        <div class="example-item">
+            <div class="example-command">wget https://example.com/file.zip</div>
+            <div class="example-description">Download a file with automatic filename detection</div>
+        </div>
+        <div class="example-item">
+            <div class="example-command">wget -v https://api.github.com/users</div>
+            <div class="example-description">Download with verbose output showing progress and speed</div>
+        </div>
+        <div class="example-item">
+            <div class="example-command">wget https://example.com/data.json mydata.json</div>
+            <div class="example-description">Download with custom filename</div>
+        </div>
+        <div class="example-item">
+            <div class="example-command">wget https://releases.ubuntu.com/20.04/ubuntu-20.04.iso</div>
+            <div class="example-description">Download large files like ISO images</div>
+        </div>
+    </div>
+    
+    <div class="use-cases-section">
+        <div class="use-cases-title">🎯 Common Use Cases</div>
+        <div class="use-case-item">
+            <div class="use-case-title">Software Downloads</div>
+            <div class="use-case-description">Download software packages, installers, and updates from the internet</div>
+        </div>
+        <div class="use-case-item">
+            <div class="use-case-title">API Data Retrieval</div>
+            <div class="use-case-description">Download JSON, XML, or other data from REST APIs for processing</div>
+        </div>
+        <div class="use-case-item">
+            <div class="use-case-title">Backup Downloads</div>
+            <div class="use-case-description">Download backup files, databases, or archives from remote servers</div>
+        </div>
+        <div class="use-case-item">
+            <div class="use-case-title">Media Downloads</div>
+            <div class="use-case-description">Download images, videos, documents, and other media files</div>
+        </div>
+    </div>
+</div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content examples-content">
+                            <div class="examples-grid">
+                                <div class="example-item"><div class="example-command">wget</div><div class="example-description">Basic usage example</div></div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content usecases-content">
+                            <div class="use-cases-grid">
+                                <div class="use-case-item"><div class="use-case-title">General Usage</div><div class="use-case-description">Common use cases for this command</div></div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="command-card" id="ping">
+                        <div class="command-header">
+                            <div class="command-name">ping</div>
+                            <div class="command-badges"><span class="badge badge-platform">windows, linux, darwin</span></div>
+                        </div>
+                        <div class="command-description">Send ICMP echo requests to a host with live feedback</div>
+                        <div class="command-usage">
+                            <button class="copy-button" onclick="copyToClipboard('ping [-c count] [-t timeout] <host>')">Copy</button>
+                            ping [-c count] [-t timeout] <host>
+                        </div>
+                        
+                        <div class="tabs">
+                            <button class="tab" onclick="showTab('options', 'ping')">Options</button>
+                            <button class="tab" onclick="showTab('examples', 'ping')">Examples</button>
+                            <button class="tab" onclick="showTab('usecases', 'ping')">Use Cases</button>
+                        </div>
+                        
+                        <div class="tab-content options-content">
+                            <div class="options-grid">
+                                
+<div class="detailed-help">
+    <div class="options-section">
+        <div class="options-title">🔧 Command Options</div>
+        <div class="option-item">
+            <span class="option-flag">&lt;host&gt;</span>
+            <span class="option-description">Target host to ping (IP address or hostname)</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">-c, --count &lt;number&gt;</span>
+            <span class="option-description">Number of ping packets to send</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">-t, --timeout &lt;ms&gt;</span>
+            <span class="option-description">Timeout for each ping in milliseconds</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">-i, --interval &lt;ms&gt;</span>
+            <span class="option-description">Interval between pings in milliseconds</span>
+        </div>
+    </div>
+    
+    <div class="examples-section">
+        <div class="examples-title">💡 Usage Examples</div>
+        <div class="example-item">
+            <div class="example-command">ping google.com</div>
+            <div class="example-description">Basic connectivity test to Google</div>
+        </div>
+        <div class="example-item">
+            <div class="example-command">ping -c 5 8.8.8.8</div>
+            <div class="example-description">Send 5 ping packets to Google DNS</div>
+        </div>
+        <div class="example-item">
+            <div class="example-command">ping -t 2000 example.com</div>
+            <div class="example-description">Ping with 2 second timeout</div>
+        </div>
+    </div>
+    
+    <div class="use-cases-section">
+        <div class="use-cases-title">🎯 Common Use Cases</div>
+        <div class="use-case-item">
+            <div class="use-case-title">Connectivity Testing</div>
+            <div class="use-case-description">Test basic network connectivity to hosts and services</div>
+        </div>
+        <div class="use-case-item">
+            <div class="use-case-title">Latency Measurement</div>
+            <div class="use-case-description">Measure network latency and response times</div>
+        </div>
+        <div class="use-case-item">
+            <div class="use-case-title">Network Troubleshooting</div>
+            <div class="use-case-description">Diagnose network connectivity issues and packet loss</div>
+        </div>
+    </div>
+</div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content examples-content">
+                            <div class="examples-grid">
+                                <div class="example-item"><div class="example-command">ping</div><div class="example-description">Basic usage example</div></div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content usecases-content">
+                            <div class="use-cases-grid">
+                                <div class="use-case-item"><div class="use-case-title">General Usage</div><div class="use-case-description">Common use cases for this command</div></div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="command-card" id="sniff">
+                        <div class="command-header">
+                            <div class="command-name">sniff</div>
+                            <div class="command-badges"><span class="badge badge-admin">⚠️ Admin Required</span><span class="badge badge-platform">windows, linux, darwin</span></div>
+                        </div>
+                        <div class="command-description">Capture and analyze network packets with advanced filtering</div>
+                        <div class="command-usage">
+                            <button class="copy-button" onclick="copyToClipboard('sniff [-i <interface>] [-c <count>] [-p <protocol>] [-s <source>] [-d <dest>] [--port <port>] [--save <file>] [-v]')">Copy</button>
+                            sniff [-i <interface>] [-c <count>] [-p <protocol>] [-s <source>] [-d <dest>] [--port <port>] [--save <file>] [-v]
+                        </div>
+                        
+                        <div class="tabs">
+                            <button class="tab" onclick="showTab('options', 'sniff')">Options</button>
+                            <button class="tab" onclick="showTab('examples', 'sniff')">Examples</button>
+                            <button class="tab" onclick="showTab('usecases', 'sniff')">Use Cases</button>
+                        </div>
+                        
+                        <div class="tab-content options-content">
+                            <div class="options-grid">
+                                
+<div class="detailed-help">
+    <div class="options-section">
+        <div class="options-title">🔧 Command Options</div>
+        <div class="option-item">
+            <span class="option-flag">-i, --interface &lt;name&gt;</span>
+            <span class="option-description">Network interface to monitor (default: eth0)</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">-c, --count &lt;number&gt;</span>
+            <span class="option-description">Number of packets to capture (default: 10)</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">-p, --protocol &lt;proto&gt;</span>
+            <span class="option-description">Filter by protocol (TCP, UDP, HTTP, HTTPS, DNS, SSH, FTP, etc.)</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">-s, --source &lt;ip&gt;</span>
+            <span class="option-description">Filter by source IP address</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">-d, --dest &lt;ip&gt;</span>
+            <span class="option-description">Filter by destination IP address</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">--port &lt;port&gt;</span>
+            <span class="option-description">Filter by port number (matches source or destination)</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">-v, --verbose</span>
+            <span class="option-description">Show detailed packet information</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">--hex</span>
+            <span class="option-description">Display hexadecimal payload dump</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">--save &lt;file&gt;</span>
+            <span class="option-description">Save capture to file</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">--continuous</span>
+            <span class="option-description">Continuous capture mode</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">-t, --timeout &lt;seconds&gt;</span>
+            <span class="option-description">Capture timeout for continuous mode</span>
+        </div>
+    </div>
+    
+    <div class="examples-section">
+        <div class="examples-title">💡 Usage Examples</div>
+        <div class="example-item">
+            <div class="example-command">sniff -c 10</div>
+            <div class="example-description">Capture 10 packets from the default interface</div>
+        </div>
+        <div class="example-item">
+            <div class="example-command">sniff -p HTTP -v</div>
+            <div class="example-description">Capture HTTP packets with detailed verbose output</div>
+        </div>
+        <div class="example-item">
+            <div class="example-command">sniff -s 192.168.1.100 --hex</div>
+            <div class="example-description">Capture packets from specific IP with hexadecimal payload dump</div>
+        </div>
+        <div class="example-item">
+            <div class="example-command">sniff --port 80 -c 5</div>
+            <div class="example-description">Capture 5 packets on port 80 (HTTP traffic)</div>
+        </div>
+        <div class="example-item">
+            <div class="example-command">sniff -p TCP -d 8.8.8.8 --save capture.pcap</div>
+            <div class="example-description">Capture TCP packets to Google DNS and save to file</div>
+        </div>
+    </div>
+    
+    <div class="use-cases-section">
+        <div class="use-cases-title">🎯 Common Use Cases</div>
+        <div class="use-case-item">
+            <div class="use-case-title">Network Troubleshooting</div>
+            <div class="use-case-description">Monitor network traffic to identify connectivity issues, packet loss, or unusual network behavior</div>
+        </div>
+        <div class="use-case-item">
+            <div class="use-case-title">Security Analysis</div>
+            <div class="use-case-description">Detect suspicious network activity, unauthorized connections, or potential security breaches</div>
+        </div>
+        <div class="use-case-item">
+            <div class="use-case-title">Protocol Analysis</div>
+            <div class="use-case-description">Analyze specific protocols (HTTP, DNS, SSH) to understand application behavior and performance</div>
+        </div>
+        <div class="use-case-item">
+            <div class="use-case-title">Performance Monitoring</div>
+            <div class="use-case-description">Monitor network performance, bandwidth usage, and identify bottlenecks in network communication</div>
+        </div>
+    </div>
+</div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content examples-content">
+                            <div class="examples-grid">
+                                <div class="example-item"><div class="example-command">sniff</div><div class="example-description">Basic usage example</div></div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content usecases-content">
+                            <div class="use-cases-grid">
+                                <div class="use-case-item"><div class="use-case-title">General Usage</div><div class="use-case-description">Common use cases for this command</div></div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="command-card" id="route">
+                        <div class="command-header">
+                            <div class="command-name">route</div>
+                            <div class="command-badges"><span class="badge badge-platform">windows, linux, darwin</span></div>
+                        </div>
+                        <div class="command-description">Display and manage routing table</div>
+                        <div class="command-usage">
+                            <button class="copy-button" onclick="copyToClipboard('route [print] [-4|-6] [add|delete] [destination] [gateway]')">Copy</button>
+                            route [print] [-4|-6] [add|delete] [destination] [gateway]
+                        </div>
+                        
+                        <div class="tabs">
+                            <button class="tab" onclick="showTab('options', 'route')">Options</button>
+                            <button class="tab" onclick="showTab('examples', 'route')">Examples</button>
+                            <button class="tab" onclick="showTab('usecases', 'route')">Use Cases</button>
+                        </div>
+                        
+                        <div class="tab-content options-content">
+                            <div class="options-grid">
+                                
+<div class="detailed-help">
+    <div class="options-section">
+        <div class="options-title">🔧 Command Options</div>
+        <div class="option-item">
+            <span class="option-flag">print, show</span>
+            <span class="option-description">Display routing table (default action)</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">add &lt;dest&gt; &lt;gateway&gt;</span>
+            <span class="option-description">Add a new route to the routing table</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">delete &lt;dest&gt; [gateway]</span>
+            <span class="option-description">Delete a route from the routing table</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">-4, --ipv4</span>
+            <span class="option-description">Show only IPv4 routes</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">-6, --ipv6</span>
+            <span class="option-description">Show only IPv6 routes</span>
+        </div>
+    </div>
+    
+    <div class="examples-section">
+        <div class="examples-title">💡 Usage Examples</div>
+        <div class="example-item">
+            <div class="example-command">route</div>
+            <div class="example-description">Display the complete routing table</div>
+        </div>
+        <div class="example-item">
+            <div class="example-command">route -4</div>
+            <div class="example-description">Show only IPv4 routing entries</div>
+        </div>
+        <div class="example-item">
+            <div class="example-command">route add 10.0.0.0/8 192.168.1.1</div>
+            <div class="example-description">Add route for 10.x.x.x network via gateway</div>
+        </div>
+        <div class="example-item">
+            <div class="example-command">route delete 10.0.0.0/8</div>
+            <div class="example-description">Remove route for 10.x.x.x network</div>
+        </div>
+    </div>
+    
+    <div class="use-cases-section">
+        <div class="use-cases-title">🎯 Common Use Cases</div>
+        <div class="use-case-item">
+            <div class="use-case-title">Network Configuration</div>
+            <div class="use-case-description">Configure routing for multi-homed systems and complex network topologies</div>
+        </div>
+        <div class="use-case-item">
+            <div class="use-case-title">VPN Setup</div>
+            <div class="use-case-description">Add routes for VPN connections and remote network access</div>
+        </div>
+        <div class="use-case-item">
+            <div class="use-case-title">Network Troubleshooting</div>
+            <div class="use-case-description">Diagnose routing issues and verify network path configurations</div>
+        </div>
+    </div>
+</div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content examples-content">
+                            <div class="examples-grid">
+                                <div class="example-item"><div class="example-command">route</div><div class="example-description">Basic usage example</div></div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content usecases-content">
+                            <div class="use-cases-grid">
+                                <div class="use-case-item"><div class="use-case-title">General Usage</div><div class="use-case-description">Common use cases for this command</div></div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="command-card" id="speedtest">
+                        <div class="command-header">
+                            <div class="command-name">speedtest</div>
+                            <div class="command-badges"><span class="badge badge-platform">windows, linux, darwin</span></div>
+                        </div>
+                        <div class="command-description">Perform network speed test</div>
+                        <div class="command-usage">
+                            <button class="copy-button" onclick="copyToClipboard('speedtest [-s] [-q] [--download-only] [--upload-only]')">Copy</button>
+                            speedtest [-s] [-q] [--download-only] [--upload-only]
+                        </div>
+                        
+                        <div class="tabs">
+                            <button class="tab" onclick="showTab('options', 'speedtest')">Options</button>
+                            <button class="tab" onclick="showTab('examples', 'speedtest')">Examples</button>
+                            <button class="tab" onclick="showTab('usecases', 'speedtest')">Use Cases</button>
+                        </div>
+                        
+                        <div class="tab-content options-content">
+                            <div class="options-grid">
+                                
+<div class="detailed-help">
+    <div class="options-section">
+        <div class="options-title">🔧 Command Options</div>
+        <div class="option-item">
+            <span class="option-flag">-s, --simple</span>
+            <span class="option-description">Simple output format with just the results</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">-q, --quiet</span>
+            <span class="option-description">Minimal output during testing</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">--download-only</span>
+            <span class="option-description">Test download speed only</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">--upload-only</span>
+            <span class="option-description">Test upload speed only</span>
+        </div>
+    </div>
+    
+    <div class="examples-section">
+        <div class="examples-title">💡 Usage Examples</div>
+        <div class="example-item">
+            <div class="example-command">speedtest</div>
+            <div class="example-description">Run complete speed test with detailed output</div>
+        </div>
+        <div class="example-item">
+            <div class="example-command">speedtest -s</div>
+            <div class="example-description">Quick speed test with simple results</div>
+        </div>
+        <div class="example-item">
+            <div class="example-command">speedtest --download-only</div>
+            <div class="example-description">Test only download speed</div>
+        </div>
+        <div class="example-item">
+            <div class="example-command">speedtest --upload-only -q</div>
+            <div class="example-description">Test only upload speed quietly</div>
+        </div>
+    </div>
+    
+    <div class="use-cases-section">
+        <div class="use-cases-title">🎯 Common Use Cases</div>
+        <div class="use-case-item">
+            <div class="use-case-title">Internet Performance Monitoring</div>
+            <div class="use-case-description">Regular testing of internet connection speed and quality</div>
+        </div>
+        <div class="use-case-item">
+            <div class="use-case-title">ISP Verification</div>
+            <div class="use-case-description">Verify that ISP is delivering promised bandwidth speeds</div>
+        </div>
+        <div class="use-case-item">
+            <div class="use-case-title">Network Troubleshooting</div>
+            <div class="use-case-description">Diagnose slow internet connections and network performance issues</div>
+        </div>
+    </div>
+</div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content examples-content">
+                            <div class="examples-grid">
+                                <div class="example-item"><div class="example-command">speedtest</div><div class="example-description">Basic usage example</div></div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content usecases-content">
+                            <div class="use-cases-grid">
+                                <div class="use-case-item"><div class="use-case-title">General Usage</div><div class="use-case-description">Common use cases for this command</div></div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="command-card" id="ipconfig">
+                        <div class="command-header">
+                            <div class="command-name">ipconfig</div>
+                            <div class="command-badges"><span class="badge badge-platform">windows, linux, darwin</span></div>
+                        </div>
+                        <div class="command-description">Display network interface configuration</div>
+                        <div class="command-usage">
+                            <button class="copy-button" onclick="copyToClipboard('ipconfig [/all] [/release] [/renew] [/flushdns]')">Copy</button>
+                            ipconfig [/all] [/release] [/renew] [/flushdns]
+                        </div>
+                        
+                        <div class="tabs">
+                            <button class="tab" onclick="showTab('options', 'ipconfig')">Options</button>
+                            <button class="tab" onclick="showTab('examples', 'ipconfig')">Examples</button>
+                            <button class="tab" onclick="showTab('usecases', 'ipconfig')">Use Cases</button>
+                        </div>
+                        
+                        <div class="tab-content options-content">
+                            <div class="options-grid">
+                                
+<div class="detailed-help">
+    <div class="examples-section">
+        <div class="examples-title">💡 Basic Usage</div>
+        <div class="example-item">
+            <div class="example-description">This command provides essential functionality for SuperShell operations. Use the command with its available options as shown in the usage syntax above.</div>
+        </div>
+    </div>
+</div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content examples-content">
+                            <div class="examples-grid">
+                                <div class="example-item"><div class="example-command">ipconfig</div><div class="example-description">Basic usage example</div></div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content usecases-content">
+                            <div class="use-cases-grid">
+                                <div class="use-case-item"><div class="use-case-title">General Usage</div><div class="use-case-description">Common use cases for this command</div></div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="command-card" id="tracert">
+                        <div class="command-header">
+                            <div class="command-name">tracert</div>
+                            <div class="command-badges"><span class="badge badge-platform">windows, linux, darwin</span></div>
+                        </div>
+                        <div class="command-description">Trace the route to a host with live feedback</div>
+                        <div class="command-usage">
+                            <button class="copy-button" onclick="copyToClipboard('tracert [-h maxhops] <host>')">Copy</button>
+                            tracert [-h maxhops] <host>
+                        </div>
+                        
+                        <div class="tabs">
+                            <button class="tab" onclick="showTab('options', 'tracert')">Options</button>
+                            <button class="tab" onclick="showTab('examples', 'tracert')">Examples</button>
+                            <button class="tab" onclick="showTab('usecases', 'tracert')">Use Cases</button>
+                        </div>
+                        
+                        <div class="tab-content options-content">
+                            <div class="options-grid">
+                                
+<div class="detailed-help">
+    <div class="examples-section">
+        <div class="examples-title">💡 Basic Usage</div>
+        <div class="example-item">
+            <div class="example-description">This command provides essential functionality for SuperShell operations. Use the command with its available options as shown in the usage syntax above.</div>
+        </div>
+    </div>
+</div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content examples-content">
+                            <div class="examples-grid">
+                                <div class="example-item"><div class="example-command">tracert</div><div class="example-description">Basic usage example</div></div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content usecases-content">
+                            <div class="use-cases-grid">
+                                <div class="use-case-item"><div class="use-case-title">General Usage</div><div class="use-case-description">Common use cases for this command</div></div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="command-card" id="netstat">
+                        <div class="command-header">
+                            <div class="command-name">netstat</div>
+                            <div class="command-badges"><span class="badge badge-platform">windows, linux, darwin</span></div>
+                        </div>
+                        <div class="command-description">Display network connections, routing tables, and network statistics</div>
+                        <div class="command-usage">
+                            <button class="copy-button" onclick="copyToClipboard('netstat [-a] [-n] [-p] [-r] [-s]')">Copy</button>
+                            netstat [-a] [-n] [-p] [-r] [-s]
+                        </div>
+                        
+                        <div class="tabs">
+                            <button class="tab" onclick="showTab('options', 'netstat')">Options</button>
+                            <button class="tab" onclick="showTab('examples', 'netstat')">Examples</button>
+                            <button class="tab" onclick="showTab('usecases', 'netstat')">Use Cases</button>
+                        </div>
+                        
+                        <div class="tab-content options-content">
+                            <div class="options-grid">
+                                
+<div class="detailed-help">
+    <div class="examples-section">
+        <div class="examples-title">💡 Basic Usage</div>
+        <div class="example-item">
+            <div class="example-description">This command provides essential functionality for SuperShell operations. Use the command with its available options as shown in the usage syntax above.</div>
+        </div>
+    </div>
+</div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content examples-content">
+                            <div class="examples-grid">
+                                <div class="example-item"><div class="example-command">netstat</div><div class="example-description">Basic usage example</div></div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content usecases-content">
+                            <div class="use-cases-grid">
+                                <div class="use-case-item"><div class="use-case-title">General Usage</div><div class="use-case-description">Common use cases for this command</div></div>
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
+
+                <section class="category-section" id="category-file-operations">
+                    <h2 class="category-title">
+                        <span class="emoji">📁</span>File Operations
+                    </h2>
+
+                    <div class="command-card" id="cd">
+                        <div class="command-header">
+                            <div class="command-name">cd</div>
+                            <div class="command-badges"><span class="badge badge-platform">windows, linux, darwin</span></div>
+                        </div>
+                        <div class="command-description">Change the current directory</div>
+                        <div class="command-usage">
+                            <button class="copy-button" onclick="copyToClipboard('cd <directory>')">Copy</button>
+                            cd <directory>
+                        </div>
+                        
+                        <div class="tabs">
+                            <button class="tab" onclick="showTab('options', 'cd')">Options</button>
+                            <button class="tab" onclick="showTab('examples', 'cd')">Examples</button>
+                            <button class="tab" onclick="showTab('usecases', 'cd')">Use Cases</button>
+                        </div>
+                        
+                        <div class="tab-content options-content">
+                            <div class="options-grid">
+                                
+<div class="detailed-help">
+    <div class="examples-section">
+        <div class="examples-title">💡 Basic Usage</div>
+        <div class="example-item">
+            <div class="example-description">This command provides essential functionality for SuperShell operations. Use the command with its available options as shown in the usage syntax above.</div>
+        </div>
+    </div>
+</div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content examples-content">
+                            <div class="examples-grid">
+                                <div class="example-item"><div class="example-command">cd</div><div class="example-description">Basic usage example</div></div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content usecases-content">
+                            <div class="use-cases-grid">
+                                <div class="use-case-item"><div class="use-case-title">General Usage</div><div class="use-case-description">Common use cases for this command</div></div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="command-card" id="cat">
+                        <div class="command-header">
+                            <div class="command-name">cat</div>
+                            <div class="command-badges"><span class="badge badge-platform">windows, linux, darwin</span></div>
+                        </div>
+                        <div class="command-description">Display file contents</div>
+                        <div class="command-usage">
+                            <button class="copy-button" onclick="copyToClipboard('cat <file1> [file2] ...')">Copy</button>
+                            cat <file1> [file2] ...
+                        </div>
+                        
+                        <div class="tabs">
+                            <button class="tab" onclick="showTab('options', 'cat')">Options</button>
+                            <button class="tab" onclick="showTab('examples', 'cat')">Examples</button>
+                            <button class="tab" onclick="showTab('usecases', 'cat')">Use Cases</button>
+                        </div>
+                        
+                        <div class="tab-content options-content">
+                            <div class="options-grid">
+                                
+<div class="detailed-help">
+    <div class="examples-section">
+        <div class="examples-title">💡 Basic Usage</div>
+        <div class="example-item">
+            <div class="example-description">This command provides essential functionality for SuperShell operations. Use the command with its available options as shown in the usage syntax above.</div>
+        </div>
+    </div>
+</div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content examples-content">
+                            <div class="examples-grid">
+                                <div class="example-item"><div class="example-command">cat</div><div class="example-description">Basic usage example</div></div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content usecases-content">
+                            <div class="use-cases-grid">
+                                <div class="use-case-item"><div class="use-case-title">General Usage</div><div class="use-case-description">Common use cases for this command</div></div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="command-card" id="mkdir">
+                        <div class="command-header">
+                            <div class="command-name">mkdir</div>
+                            <div class="command-badges"><span class="badge badge-platform">windows, linux, darwin</span></div>
+                        </div>
+                        <div class="command-description">Create directories</div>
+                        <div class="command-usage">
+                            <button class="copy-button" onclick="copyToClipboard('mkdir [-p] <directory1> [directory2] ...')">Copy</button>
+                            mkdir [-p] <directory1> [directory2] ...
+                        </div>
+                        
+                        <div class="tabs">
+                            <button class="tab" onclick="showTab('options', 'mkdir')">Options</button>
+                            <button class="tab" onclick="showTab('examples', 'mkdir')">Examples</button>
+                            <button class="tab" onclick="showTab('usecases', 'mkdir')">Use Cases</button>
+                        </div>
+                        
+                        <div class="tab-content options-content">
+                            <div class="options-grid">
+                                
+<div class="detailed-help">
+    <div class="examples-section">
+        <div class="examples-title">💡 Basic Usage</div>
+        <div class="example-item">
+            <div class="example-description">This command provides essential functionality for SuperShell operations. Use the command with its available options as shown in the usage syntax above.</div>
+        </div>
+    </div>
+</div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content examples-content">
+                            <div class="examples-grid">
+                                <div class="example-item"><div class="example-command">mkdir</div><div class="example-description">Basic usage example</div></div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content usecases-content">
+                            <div class="use-cases-grid">
+                                <div class="use-case-item"><div class="use-case-title">General Usage</div><div class="use-case-description">Common use cases for this command</div></div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="command-card" id="echo">
+                        <div class="command-header">
+                            <div class="command-name">echo</div>
+                            <div class="command-badges"><span class="badge badge-platform">windows, linux, darwin</span></div>
+                        </div>
+                        <div class="command-description">Display text to the console</div>
+                        <div class="command-usage">
+                            <button class="copy-button" onclick="copyToClipboard('echo <text>')">Copy</button>
+                            echo <text>
+                        </div>
+                        
+                        <div class="tabs">
+                            <button class="tab" onclick="showTab('options', 'echo')">Options</button>
+                            <button class="tab" onclick="showTab('examples', 'echo')">Examples</button>
+                            <button class="tab" onclick="showTab('usecases', 'echo')">Use Cases</button>
+                        </div>
+                        
+                        <div class="tab-content options-content">
+                            <div class="options-grid">
+                                
+<div class="detailed-help">
+    <div class="examples-section">
+        <div class="examples-title">💡 Basic Usage</div>
+        <div class="example-item">
+            <div class="example-description">This command provides essential functionality for SuperShell operations. Use the command with its available options as shown in the usage syntax above.</div>
+        </div>
+    </div>
+</div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content examples-content">
+                            <div class="examples-grid">
+                                <div class="example-item"><div class="example-command">echo</div><div class="example-description">Basic usage example</div></div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content usecases-content">
+                            <div class="use-cases-grid">
+                                <div class="use-case-item"><div class="use-case-title">General Usage</div><div class="use-case-description">Common use cases for this command</div></div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="command-card" id="rm">
+                        <div class="command-header">
+                            <div class="command-name">rm</div>
+                            <div class="command-badges"><span class="badge badge-platform">windows, linux, darwin</span></div>
+                        </div>
+                        <div class="command-description">Remove files and directories</div>
+                        <div class="command-usage">
+                            <button class="copy-button" onclick="copyToClipboard('rm [-r] [-f] <file1> [file2] ...')">Copy</button>
+                            rm [-r] [-f] <file1> [file2] ...
+                        </div>
+                        
+                        <div class="tabs">
+                            <button class="tab" onclick="showTab('options', 'rm')">Options</button>
+                            <button class="tab" onclick="showTab('examples', 'rm')">Examples</button>
+                            <button class="tab" onclick="showTab('usecases', 'rm')">Use Cases</button>
+                        </div>
+                        
+                        <div class="tab-content options-content">
+                            <div class="options-grid">
+                                
+<div class="detailed-help">
+    <div class="examples-section">
+        <div class="examples-title">💡 Basic Usage</div>
+        <div class="example-item">
+            <div class="example-description">This command provides essential functionality for SuperShell operations. Use the command with its available options as shown in the usage syntax above.</div>
+        </div>
+    </div>
+</div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content examples-content">
+                            <div class="examples-grid">
+                                <div class="example-item"><div class="example-command">rm</div><div class="example-description">Basic usage example</div></div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content usecases-content">
+                            <div class="use-cases-grid">
+                                <div class="use-case-item"><div class="use-case-title">General Usage</div><div class="use-case-description">Common use cases for this command</div></div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="command-card" id="rmdir">
+                        <div class="command-header">
+                            <div class="command-name">rmdir</div>
+                            <div class="command-badges"><span class="badge badge-platform">windows, linux, darwin</span></div>
+                        </div>
+                        <div class="command-description">Remove empty directories</div>
+                        <div class="command-usage">
+                            <button class="copy-button" onclick="copyToClipboard('rmdir <directory>...')">Copy</button>
+                            rmdir <directory>...
+                        </div>
+                        
+                        <div class="tabs">
+                            <button class="tab" onclick="showTab('options', 'rmdir')">Options</button>
+                            <button class="tab" onclick="showTab('examples', 'rmdir')">Examples</button>
+                            <button class="tab" onclick="showTab('usecases', 'rmdir')">Use Cases</button>
+                        </div>
+                        
+                        <div class="tab-content options-content">
+                            <div class="options-grid">
+                                
+<div class="detailed-help">
+    <div class="examples-section">
+        <div class="examples-title">💡 Basic Usage</div>
+        <div class="example-item">
+            <div class="example-description">This command provides essential functionality for SuperShell operations. Use the command with its available options as shown in the usage syntax above.</div>
+        </div>
+    </div>
+</div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content examples-content">
+                            <div class="examples-grid">
+                                <div class="example-item"><div class="example-command">rmdir</div><div class="example-description">Basic usage example</div></div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content usecases-content">
+                            <div class="use-cases-grid">
+                                <div class="use-case-item"><div class="use-case-title">General Usage</div><div class="use-case-description">Common use cases for this command</div></div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="command-card" id="cp">
+                        <div class="command-header">
+                            <div class="command-name">cp</div>
+                            <div class="command-badges"><span class="badge badge-platform">windows, linux, darwin</span></div>
+                        </div>
+                        <div class="command-description">Copy files and directories</div>
+                        <div class="command-usage">
+                            <button class="copy-button" onclick="copyToClipboard('cp [-r] [-v] <source> <destination>')">Copy</button>
+                            cp [-r] [-v] <source> <destination>
+                        </div>
+                        
+                        <div class="tabs">
+                            <button class="tab" onclick="showTab('options', 'cp')">Options</button>
+                            <button class="tab" onclick="showTab('examples', 'cp')">Examples</button>
+                            <button class="tab" onclick="showTab('usecases', 'cp')">Use Cases</button>
+                        </div>
+                        
+                        <div class="tab-content options-content">
+                            <div class="options-grid">
+                                
+<div class="detailed-help">
+    <div class="options-section">
+        <div class="options-title">🔧 Command Options</div>
+        <div class="option-item">
+            <span class="option-flag">-r, --recursive</span>
+            <span class="option-description">Copy directories recursively</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">-v, --verbose</span>
+            <span class="option-description">Show detailed copy operations</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">-f, --force</span>
+            <span class="option-description">Force overwrite existing files</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">-p, --preserve</span>
+            <span class="option-description">Preserve file attributes and timestamps</span>
+        </div>
+    </div>
+    
+    <div class="examples-section">
+        <div class="examples-title">💡 Usage Examples</div>
+        <div class="example-item">
+            <div class="example-command">cp file.txt backup.txt</div>
+            <div class="example-description">Copy a single file</div>
+        </div>
+        <div class="example-item">
+            <div class="example-command">cp -r folder/ backup_folder/</div>
+            <div class="example-description">Copy directory recursively</div>
+        </div>
+        <div class="example-item">
+            <div class="example-command">cp -v *.txt /backup/</div>
+            <div class="example-description">Copy all text files with verbose output</div>
+        </div>
+    </div>
+    
+    <div class="use-cases-section">
+        <div class="use-cases-title">🎯 Common Use Cases</div>
+        <div class="use-case-item">
+            <div class="use-case-title">File Backup</div>
+            <div class="use-case-description">Create backups of important files and directories</div>
+        </div>
+        <div class="use-case-item">
+            <div class="use-case-title">File Distribution</div>
+            <div class="use-case-description">Copy files to multiple locations or systems</div>
+        </div>
+        <div class="use-case-item">
+            <div class="use-case-title">Development</div>
+            <div class="use-case-description">Copy project files, templates, and configurations</div>
+        </div>
+    </div>
+</div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content examples-content">
+                            <div class="examples-grid">
+                                <div class="example-item"><div class="example-command">cp</div><div class="example-description">Basic usage example</div></div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content usecases-content">
+                            <div class="use-cases-grid">
+                                <div class="use-case-item"><div class="use-case-title">General Usage</div><div class="use-case-description">Common use cases for this command</div></div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="command-card" id="ls">
+                        <div class="command-header">
+                            <div class="command-name">ls</div>
+                            <div class="command-badges"><span class="badge badge-platform">windows, linux, darwin</span></div>
+                        </div>
+                        <div class="command-description">List directory contents with rich formatting</div>
+                        <div class="command-usage">
+                            <button class="copy-button" onclick="copyToClipboard('ls [-a] [-l] [-h] [directory|pattern]')">Copy</button>
+                            ls [-a] [-l] [-h] [directory|pattern]
+                        </div>
+                        
+                        <div class="tabs">
+                            <button class="tab" onclick="showTab('options', 'ls')">Options</button>
+                            <button class="tab" onclick="showTab('examples', 'ls')">Examples</button>
+                            <button class="tab" onclick="showTab('usecases', 'ls')">Use Cases</button>
+                        </div>
+                        
+                        <div class="tab-content options-content">
+                            <div class="options-grid">
+                                
+<div class="detailed-help">
+    <div class="options-section">
+        <div class="options-title">🔧 Command Options</div>
+        <div class="option-item">
+            <span class="option-flag">-l, --long</span>
+            <span class="option-description">Use long listing format with detailed information</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">-a, --all</span>
+            <span class="option-description">Show hidden files and directories</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">-h, --human-readable</span>
+            <span class="option-description">Show file sizes in human readable format</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">-R, --recursive</span>
+            <span class="option-description">List directories recursively</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">-t, --time</span>
+            <span class="option-description">Sort by modification time</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">-S, --size</span>
+            <span class="option-description">Sort by file size</span>
+        </div>
+    </div>
+    
+    <div class="examples-section">
+        <div class="examples-title">💡 Usage Examples</div>
+        <div class="example-item">
+            <div class="example-command">ls</div>
+            <div class="example-description">List files and directories in current directory</div>
+        </div>
+        <div class="example-item">
+            <div class="example-command">ls -la</div>
+            <div class="example-description">Long format listing including hidden files</div>
+        </div>
+        <div class="example-item">
+            <div class="example-command">ls -lh /home</div>
+            <div class="example-description">List /home directory with human-readable sizes</div>
+        </div>
+        <div class="example-item">
+            <div class="example-command">ls -lt</div>
+            <div class="example-description">List files sorted by modification time</div>
+        </div>
+    </div>
+    
+    <div class="use-cases-section">
+        <div class="use-cases-title">🎯 Common Use Cases</div>
+        <div class="use-case-item">
+            <div class="use-case-title">File Management</div>
+            <div class="use-case-description">Browse and explore directory contents and file information</div>
+        </div>
+        <div class="use-case-item">
+            <div class="use-case-title">System Administration</div>
+            <div class="use-case-description">Check file permissions, ownership, and system directory contents</div>
+        </div>
+        <div class="use-case-item">
+            <div class="use-case-title">Development</div>
+            <div class="use-case-description">Navigate project directories and examine file structures</div>
+        </div>
+    </div>
+</div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content examples-content">
+                            <div class="examples-grid">
+                                <div class="example-item"><div class="example-command">ls</div><div class="example-description">Basic usage example</div></div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content usecases-content">
+                            <div class="use-cases-grid">
+                                <div class="use-case-item"><div class="use-case-title">General Usage</div><div class="use-case-description">Common use cases for this command</div></div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="command-card" id="dir">
+                        <div class="command-header">
+                            <div class="command-name">dir</div>
+                            <div class="command-badges"><span class="badge badge-platform">windows, linux, darwin</span></div>
+                        </div>
+                        <div class="command-description">List directory contents (Windows-style)</div>
+                        <div class="command-usage">
+                            <button class="copy-button" onclick="copyToClipboard('dir [directory]')">Copy</button>
+                            dir [directory]
+                        </div>
+                        
+                        <div class="tabs">
+                            <button class="tab" onclick="showTab('options', 'dir')">Options</button>
+                            <button class="tab" onclick="showTab('examples', 'dir')">Examples</button>
+                            <button class="tab" onclick="showTab('usecases', 'dir')">Use Cases</button>
+                        </div>
+                        
+                        <div class="tab-content options-content">
+                            <div class="options-grid">
+                                
+<div class="detailed-help">
+    <div class="examples-section">
+        <div class="examples-title">💡 Basic Usage</div>
+        <div class="example-item">
+            <div class="example-description">This command provides essential functionality for SuperShell operations. Use the command with its available options as shown in the usage syntax above.</div>
+        </div>
+    </div>
+</div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content examples-content">
+                            <div class="examples-grid">
+                                <div class="example-item"><div class="example-command">dir</div><div class="example-description">Basic usage example</div></div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content usecases-content">
+                            <div class="use-cases-grid">
+                                <div class="use-case-item"><div class="use-case-title">General Usage</div><div class="use-case-description">Common use cases for this command</div></div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="command-card" id="mv">
+                        <div class="command-header">
+                            <div class="command-name">mv</div>
+                            <div class="command-badges"><span class="badge badge-platform">windows, linux, darwin</span></div>
+                        </div>
+                        <div class="command-description">Move/rename files</div>
+                        <div class="command-usage">
+                            <button class="copy-button" onclick="copyToClipboard('mv <source> <destination>')">Copy</button>
+                            mv <source> <destination>
+                        </div>
+                        
+                        <div class="tabs">
+                            <button class="tab" onclick="showTab('options', 'mv')">Options</button>
+                            <button class="tab" onclick="showTab('examples', 'mv')">Examples</button>
+                            <button class="tab" onclick="showTab('usecases', 'mv')">Use Cases</button>
+                        </div>
+                        
+                        <div class="tab-content options-content">
+                            <div class="options-grid">
+                                
+<div class="detailed-help">
+    <div class="examples-section">
+        <div class="examples-title">💡 Basic Usage</div>
+        <div class="example-item">
+            <div class="example-description">This command provides essential functionality for SuperShell operations. Use the command with its available options as shown in the usage syntax above.</div>
+        </div>
+    </div>
+</div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content examples-content">
+                            <div class="examples-grid">
+                                <div class="example-item"><div class="example-command">mv</div><div class="example-description">Basic usage example</div></div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content usecases-content">
+                            <div class="use-cases-grid">
+                                <div class="use-case-item"><div class="use-case-title">General Usage</div><div class="use-case-description">Common use cases for this command</div></div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="command-card" id="pwd">
+                        <div class="command-header">
+                            <div class="command-name">pwd</div>
+                            <div class="command-badges"><span class="badge badge-platform">windows, linux, darwin</span></div>
+                        </div>
+                        <div class="command-description">Print the current working directory</div>
+                        <div class="command-usage">
+                            <button class="copy-button" onclick="copyToClipboard('pwd')">Copy</button>
+                            pwd
+                        </div>
+                        
+                        <div class="tabs">
+                            <button class="tab" onclick="showTab('options', 'pwd')">Options</button>
+                            <button class="tab" onclick="showTab('examples', 'pwd')">Examples</button>
+                            <button class="tab" onclick="showTab('usecases', 'pwd')">Use Cases</button>
+                        </div>
+                        
+                        <div class="tab-content options-content">
+                            <div class="options-grid">
+                                
+<div class="detailed-help">
+    <div class="examples-section">
+        <div class="examples-title">💡 Basic Usage</div>
+        <div class="example-item">
+            <div class="example-description">This command provides essential functionality for SuperShell operations. Use the command with its available options as shown in the usage syntax above.</div>
+        </div>
+    </div>
+</div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content examples-content">
+                            <div class="examples-grid">
+                                <div class="example-item"><div class="example-command">pwd</div><div class="example-description">Basic usage example</div></div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content usecases-content">
+                            <div class="use-cases-grid">
+                                <div class="use-case-item"><div class="use-case-title">General Usage</div><div class="use-case-description">Common use cases for this command</div></div>
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
+
+                <section class="category-section" id="category-system-information">
+                    <h2 class="category-title">
+                        <span class="emoji">⚙️</span>System Information
+                    </h2>
+
+                    <div class="command-card" id="clear">
+                        <div class="command-header">
+                            <div class="command-name">clear</div>
+                            <div class="command-badges"><span class="badge badge-platform">windows, linux, darwin</span></div>
+                        </div>
+                        <div class="command-description">Clear the terminal screen</div>
+                        <div class="command-usage">
+                            <button class="copy-button" onclick="copyToClipboard('clear')">Copy</button>
+                            clear
+                        </div>
+                        
+                        <div class="tabs">
+                            <button class="tab" onclick="showTab('options', 'clear')">Options</button>
+                            <button class="tab" onclick="showTab('examples', 'clear')">Examples</button>
+                            <button class="tab" onclick="showTab('usecases', 'clear')">Use Cases</button>
+                        </div>
+                        
+                        <div class="tab-content options-content">
+                            <div class="options-grid">
+                                
+<div class="detailed-help">
+    <div class="examples-section">
+        <div class="examples-title">💡 Basic Usage</div>
+        <div class="example-item">
+            <div class="example-description">This command provides essential functionality for SuperShell operations. Use the command with its available options as shown in the usage syntax above.</div>
+        </div>
+    </div>
+</div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content examples-content">
+                            <div class="examples-grid">
+                                <div class="example-item"><div class="example-command">clear</div><div class="example-description">Basic usage example</div></div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content usecases-content">
+                            <div class="use-cases-grid">
+                                <div class="use-case-item"><div class="use-case-title">General Usage</div><div class="use-case-description">Common use cases for this command</div></div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="command-card" id="ver">
+                        <div class="command-header">
+                            <div class="command-name">ver</div>
+                            <div class="command-badges"><span class="badge badge-platform">windows, linux, darwin</span></div>
+                        </div>
+                        <div class="command-description">Display version information</div>
+                        <div class="command-usage">
+                            <button class="copy-button" onclick="copyToClipboard('ver [-v|--verbose]')">Copy</button>
+                            ver [-v|--verbose]
+                        </div>
+                        
+                        <div class="tabs">
+                            <button class="tab" onclick="showTab('options', 'ver')">Options</button>
+                            <button class="tab" onclick="showTab('examples', 'ver')">Examples</button>
+                            <button class="tab" onclick="showTab('usecases', 'ver')">Use Cases</button>
+                        </div>
+                        
+                        <div class="tab-content options-content">
+                            <div class="options-grid">
+                                
+<div class="detailed-help">
+    <div class="options-section">
+        <div class="options-title">🔧 Command Options</div>
+        <div class="option-item">
+            <span class="option-flag">-v, --verbose</span>
+            <span class="option-description">Show detailed version information with features and runtime details</span>
+        </div>
+    </div>
+    
+    <div class="examples-section">
+        <div class="examples-title">💡 Usage Examples</div>
+        <div class="example-item">
+            <div class="example-command">ver</div>
+            <div class="example-description">Show basic version information</div>
+        </div>
+        <div class="example-item">
+            <div class="example-command">ver -v</div>
+            <div class="example-description">Show comprehensive version details with features and system info</div>
+        </div>
+    </div>
+    
+    <div class="use-cases-section">
+        <div class="use-cases-title">🎯 Common Use Cases</div>
+        <div class="use-case-item">
+            <div class="use-case-title">Version Checking</div>
+            <div class="use-case-description">Verify SuperShell version for compatibility or support</div>
+        </div>
+        <div class="use-case-item">
+            <div class="use-case-title">System Information</div>
+            <div class="use-case-description">Get runtime and build information for troubleshooting</div>
+        </div>
+        <div class="use-case-item">
+            <div class="use-case-title">Feature Discovery</div>
+            <div class="use-case-description">See what features are available in your version</div>
+        </div>
+    </div>
+</div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content examples-content">
+                            <div class="examples-grid">
+                                <div class="example-item"><div class="example-command">ver</div><div class="example-description">Basic usage example</div></div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content usecases-content">
+                            <div class="use-cases-grid">
+                                <div class="use-case-item"><div class="use-case-title">General Usage</div><div class="use-case-description">Common use cases for this command</div></div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="command-card" id="whoami">
+                        <div class="command-header">
+                            <div class="command-name">whoami</div>
+                            <div class="command-badges"><span class="badge badge-platform">windows, linux, darwin</span></div>
+                        </div>
+                        <div class="command-description">Display current user information</div>
+                        <div class="command-usage">
+                            <button class="copy-button" onclick="copyToClipboard('whoami [-v|--verbose]')">Copy</button>
+                            whoami [-v|--verbose]
+                        </div>
+                        
+                        <div class="tabs">
+                            <button class="tab" onclick="showTab('options', 'whoami')">Options</button>
+                            <button class="tab" onclick="showTab('examples', 'whoami')">Examples</button>
+                            <button class="tab" onclick="showTab('usecases', 'whoami')">Use Cases</button>
+                        </div>
+                        
+                        <div class="tab-content options-content">
+                            <div class="options-grid">
+                                
+<div class="detailed-help">
+    <div class="examples-section">
+        <div class="examples-title">💡 Basic Usage</div>
+        <div class="example-item">
+            <div class="example-description">This command provides essential functionality for SuperShell operations. Use the command with its available options as shown in the usage syntax above.</div>
+        </div>
+    </div>
+</div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content examples-content">
+                            <div class="examples-grid">
+                                <div class="example-item"><div class="example-command">whoami</div><div class="example-description">Basic usage example</div></div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content usecases-content">
+                            <div class="use-cases-grid">
+                                <div class="use-case-item"><div class="use-case-title">General Usage</div><div class="use-case-description">Common use cases for this command</div></div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="command-card" id="hostname">
+                        <div class="command-header">
+                            <div class="command-name">hostname</div>
+                            <div class="command-badges"><span class="badge badge-platform">windows, linux, darwin</span></div>
+                        </div>
+                        <div class="command-description">Display or set the system hostname</div>
+                        <div class="command-usage">
+                            <button class="copy-button" onclick="copyToClipboard('hostname [-v|--verbose] [-i|--ip]')">Copy</button>
+                            hostname [-v|--verbose] [-i|--ip]
+                        </div>
+                        
+                        <div class="tabs">
+                            <button class="tab" onclick="showTab('options', 'hostname')">Options</button>
+                            <button class="tab" onclick="showTab('examples', 'hostname')">Examples</button>
+                            <button class="tab" onclick="showTab('usecases', 'hostname')">Use Cases</button>
+                        </div>
+                        
+                        <div class="tab-content options-content">
+                            <div class="options-grid">
+                                
+<div class="detailed-help">
+    <div class="examples-section">
+        <div class="examples-title">💡 Basic Usage</div>
+        <div class="example-item">
+            <div class="example-description">This command provides essential functionality for SuperShell operations. Use the command with its available options as shown in the usage syntax above.</div>
+        </div>
+    </div>
+</div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content examples-content">
+                            <div class="examples-grid">
+                                <div class="example-item"><div class="example-command">hostname</div><div class="example-description">Basic usage example</div></div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content usecases-content">
+                            <div class="use-cases-grid">
+                                <div class="use-case-item"><div class="use-case-title">General Usage</div><div class="use-case-description">Common use cases for this command</div></div>
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
+
+                <section class="category-section" id="category-help-&-discovery">
+                    <h2 class="category-title">
+                        <span class="emoji">🔍</span>Help & Discovery
+                    </h2>
+
+                    <div class="command-card" id="helphtml">
+                        <div class="command-header">
+                            <div class="command-name">helphtml</div>
+                            <div class="command-badges"><span class="badge badge-platform">windows, linux, darwin</span></div>
+                        </div>
+                        <div class="command-description">Generate HTML help documentation for all commands</div>
+                        <div class="command-usage">
+                            <button class="copy-button" onclick="copyToClipboard('helphtml [filename]')">Copy</button>
+                            helphtml [filename]
+                        </div>
+                        
+                        <div class="tabs">
+                            <button class="tab" onclick="showTab('options', 'helphtml')">Options</button>
+                            <button class="tab" onclick="showTab('examples', 'helphtml')">Examples</button>
+                            <button class="tab" onclick="showTab('usecases', 'helphtml')">Use Cases</button>
+                        </div>
+                        
+                        <div class="tab-content options-content">
+                            <div class="options-grid">
+                                
+<div class="detailed-help">
+    <div class="examples-section">
+        <div class="examples-title">💡 Basic Usage</div>
+        <div class="example-item">
+            <div class="example-description">This command provides essential functionality for SuperShell operations. Use the command with its available options as shown in the usage syntax above.</div>
+        </div>
+    </div>
+</div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content examples-content">
+                            <div class="examples-grid">
+                                <div class="example-item"><div class="example-command">helphtml</div><div class="example-description">Basic usage example</div></div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content usecases-content">
+                            <div class="use-cases-grid">
+                                <div class="use-case-item"><div class="use-case-title">General Usage</div><div class="use-case-description">Common use cases for this command</div></div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="command-card" id="exit">
+                        <div class="command-header">
+                            <div class="command-name">exit</div>
+                            <div class="command-badges"><span class="badge badge-platform">windows, linux, darwin</span></div>
+                        </div>
+                        <div class="command-description">Exit the shell</div>
+                        <div class="command-usage">
+                            <button class="copy-button" onclick="copyToClipboard('exit [code]')">Copy</button>
+                            exit [code]
+                        </div>
+                        
+                        <div class="tabs">
+                            <button class="tab" onclick="showTab('options', 'exit')">Options</button>
+                            <button class="tab" onclick="showTab('examples', 'exit')">Examples</button>
+                            <button class="tab" onclick="showTab('usecases', 'exit')">Use Cases</button>
+                        </div>
+                        
+                        <div class="tab-content options-content">
+                            <div class="options-grid">
+                                
+<div class="detailed-help">
+    <div class="examples-section">
+        <div class="examples-title">💡 Basic Usage</div>
+        <div class="example-item">
+            <div class="example-description">This command provides essential functionality for SuperShell operations. Use the command with its available options as shown in the usage syntax above.</div>
+        </div>
+    </div>
+</div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content examples-content">
+                            <div class="examples-grid">
+                                <div class="example-item"><div class="example-command">exit</div><div class="example-description">Basic usage example</div></div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content usecases-content">
+                            <div class="use-cases-grid">
+                                <div class="use-case-item"><div class="use-case-title">General Usage</div><div class="use-case-description">Common use cases for this command</div></div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="command-card" id="help">
+                        <div class="command-header">
+                            <div class="command-name">help</div>
+                            <div class="command-badges"><span class="badge badge-platform">windows, linux, darwin</span></div>
+                        </div>
+                        <div class="command-description">Show available commands and their descriptions</div>
+                        <div class="command-usage">
+                            <button class="copy-button" onclick="copyToClipboard('help [command]')">Copy</button>
+                            help [command]
+                        </div>
+                        
+                        <div class="tabs">
+                            <button class="tab" onclick="showTab('options', 'help')">Options</button>
+                            <button class="tab" onclick="showTab('examples', 'help')">Examples</button>
+                            <button class="tab" onclick="showTab('usecases', 'help')">Use Cases</button>
+                        </div>
+                        
+                        <div class="tab-content options-content">
+                            <div class="options-grid">
+                                
+<div class="detailed-help">
+    <div class="options-section">
+        <div class="options-title">🔧 Command Options</div>
+        <div class="option-item">
+            <span class="option-flag">[command]</span>
+            <span class="option-description">Get detailed help for a specific command</span>
+        </div>
+    </div>
+    
+    <div class="examples-section">
+        <div class="examples-title">💡 Usage Examples</div>
+        <div class="example-item">
+            <div class="example-command">help</div>
+            <div class="example-description">Show all available commands with descriptions</div>
+        </div>
+        <div class="example-item">
+            <div class="example-command">help ping</div>
+            <div class="example-description">Get detailed help for the ping command</div>
+        </div>
+        <div class="example-item">
+            <div class="example-command">help sniff</div>
+            <div class="example-description">Get comprehensive help for the sniff command with all options</div>
+        </div>
+    </div>
+    
+    <div class="use-cases-section">
+        <div class="use-cases-title">🎯 Common Use Cases</div>
+        <div class="use-case-item">
+            <div class="use-case-title">Command Reference</div>
+            <div class="use-case-description">Quick reference for command syntax and options</div>
+        </div>
+        <div class="use-case-item">
+            <div class="use-case-title">Learning Tool</div>
+            <div class="use-case-description">Learn about available commands and their capabilities</div>
+        </div>
+        <div class="use-case-item">
+            <div class="use-case-title">Troubleshooting</div>
+            <div class="use-case-description">Get help when commands aren't working as expected</div>
+        </div>
+    </div>
+</div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content examples-content">
+                            <div class="examples-grid">
+                                <div class="example-item"><div class="example-command">help</div><div class="example-description">Basic usage example</div></div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content usecases-content">
+                            <div class="use-cases-grid">
+                                <div class="use-case-item"><div class="use-case-title">General Usage</div><div class="use-case-description">Common use cases for this command</div></div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="command-card" id="lookup">
+                        <div class="command-header">
+                            <div class="command-name">lookup</div>
+                            <div class="command-badges"><span class="badge badge-platform">windows, linux, darwin</span></div>
+                        </div>
+                        <div class="command-description">Intelligent command discovery and suggestions</div>
+                        <div class="command-usage">
+                            <button class="copy-button" onclick="copyToClipboard('lookup [-m] [-s] [-c] [-t <task>] [query]')">Copy</button>
+                            lookup [-m] [-s] [-c] [-t <task>] [query]
+                        </div>
+                        
+                        <div class="tabs">
+                            <button class="tab" onclick="showTab('options', 'lookup')">Options</button>
+                            <button class="tab" onclick="showTab('examples', 'lookup')">Examples</button>
+                            <button class="tab" onclick="showTab('usecases', 'lookup')">Use Cases</button>
+                        </div>
+                        
+                        <div class="tab-content options-content">
+                            <div class="options-grid">
+                                
+<div class="detailed-help">
+    <div class="options-section">
+        <div class="options-title">🔧 Command Options</div>
+        <div class="option-item">
+            <span class="option-flag">-s, --similar</span>
+            <span class="option-description">Show similar commands using fuzzy matching</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">-c, --categories</span>
+            <span class="option-description">Show all command categories</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">-t, --task &lt;task&gt;</span>
+            <span class="option-description">Get task-based command suggestions</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">-m, --menu</span>
+            <span class="option-description">Show interactive menu for command exploration</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">[query]</span>
+            <span class="option-description">Search term for command lookup</span>
+        </div>
+    </div>
+    
+    <div class="examples-section">
+        <div class="examples-title">💡 Usage Examples</div>
+        <div class="example-item">
+            <div class="example-command">lookup ping</div>
+            <div class="example-description">Find commands related to 'ping' - shows exact, partial, and similar matches</div>
+        </div>
+        <div class="example-item">
+            <div class="example-command">lookup pin</div>
+            <div class="example-description">Find all commands containing 'pin' - will find 'ping' and similar commands</div>
+        </div>
+        <div class="example-item">
+            <div class="example-command">lookup network</div>
+            <div class="example-description">Find all network-related commands by description matching</div>
+        </div>
+        <div class="example-item">
+            <div class="example-command">lookup -c</div>
+            <div class="example-description">Show all command categories with command counts</div>
+        </div>
+        <div class="example-item">
+            <div class="example-command">lookup -t network</div>
+            <div class="example-description">Get task-based suggestions for network operations</div>
+        </div>
+        <div class="example-item">
+            <div class="example-command">lookup -m</div>
+            <div class="example-description">Open interactive menu for command exploration</div>
+        </div>
+    </div>
+    
+    <div class="use-cases-section">
+        <div class="use-cases-title">🎯 Common Use Cases</div>
+        <div class="use-case-item">
+            <div class="use-case-title">Command Discovery</div>
+            <div class="use-case-description">Find commands when you only remember part of the name or functionality</div>
+        </div>
+        <div class="use-case-item">
+            <div class="use-case-title">Task-Based Help</div>
+            <div class="use-case-description">Get command recommendations based on what you want to accomplish</div>
+        </div>
+        <div class="use-case-item">
+            <div class="use-case-title">Learning Tool</div>
+            <div class="use-case-description">Explore available commands and learn about SuperShell capabilities</div>
+        </div>
+        <div class="use-case-item">
+            <div class="use-case-title">Quick Reference</div>
+            <div class="use-case-description">Browse commands by category or search for specific functionality</div>
+        </div>
+    </div>
+</div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content examples-content">
+                            <div class="examples-grid">
+                                <div class="example-item"><div class="example-command">lookup</div><div class="example-description">Basic usage example</div></div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content usecases-content">
+                            <div class="use-cases-grid">
+                                <div class="use-case-item"><div class="use-case-title">General Usage</div><div class="use-case-description">Common use cases for this command</div></div>
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
+
+                <section class="category-section" id="category-fastcp-transfer">
+                    <h2 class="category-title">
+                        <span class="emoji">🚀</span>FastCP Transfer
+                    </h2>
+
+                    <div class="command-card" id="fastcp-send">
+                        <div class="command-header">
+                            <div class="command-name">fastcp-send</div>
+                            <div class="command-badges"><span class="badge badge-platform">windows, linux, darwin</span></div>
+                        </div>
+                        <div class="command-description">Ultra-fast encrypted file/directory transfer (sender)</div>
+                        <div class="command-usage">
+                            <button class="copy-button" onclick="copyToClipboard('fastcp-send <file/dir> <destination> [-p <port>] [-e] [--compress]')">Copy</button>
+                            fastcp-send <file/dir> <destination> [-p <port>] [-e] [--compress]
+                        </div>
+                        
+                        <div class="tabs">
+                            <button class="tab" onclick="showTab('options', 'fastcp-send')">Options</button>
+                            <button class="tab" onclick="showTab('examples', 'fastcp-send')">Examples</button>
+                            <button class="tab" onclick="showTab('usecases', 'fastcp-send')">Use Cases</button>
+                        </div>
+                        
+                        <div class="tab-content options-content">
+                            <div class="options-grid">
+                                
+<div class="detailed-help">
+    <div class="examples-section">
+        <div class="examples-title">💡 Basic Usage</div>
+        <div class="example-item">
+            <div class="example-description">This command provides essential functionality for SuperShell operations. Use the command with its available options as shown in the usage syntax above.</div>
+        </div>
+    </div>
+</div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content examples-content">
+                            <div class="examples-grid">
+                                <div class="example-item"><div class="example-command">fastcp-send</div><div class="example-description">Basic usage example</div></div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content usecases-content">
+                            <div class="use-cases-grid">
+                                <div class="use-case-item"><div class="use-case-title">General Usage</div><div class="use-case-description">Common use cases for this command</div></div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="command-card" id="fastcp-recv">
+                        <div class="command-header">
+                            <div class="command-name">fastcp-recv</div>
+                            <div class="command-badges"><span class="badge badge-platform">windows, linux, darwin</span></div>
+                        </div>
+                        <div class="command-description">Ultra-fast encrypted file/directory transfer (receiver)</div>
+                        <div class="command-usage">
+                            <button class="copy-button" onclick="copyToClipboard('fastcp-recv [destination] [-p <port>] [-e] [--auto-accept]')">Copy</button>
+                            fastcp-recv [destination] [-p <port>] [-e] [--auto-accept]
+                        </div>
+                        
+                        <div class="tabs">
+                            <button class="tab" onclick="showTab('options', 'fastcp-recv')">Options</button>
+                            <button class="tab" onclick="showTab('examples', 'fastcp-recv')">Examples</button>
+                            <button class="tab" onclick="showTab('usecases', 'fastcp-recv')">Use Cases</button>
+                        </div>
+                        
+                        <div class="tab-content options-content">
+                            <div class="options-grid">
+                                
+<div class="detailed-help">
+    <div class="examples-section">
+        <div class="examples-title">💡 Basic Usage</div>
+        <div class="example-item">
+            <div class="example-description">This command provides essential functionality for SuperShell operations. Use the command with its available options as shown in the usage syntax above.</div>
+        </div>
+    </div>
+</div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content examples-content">
+                            <div class="examples-grid">
+                                <div class="example-item"><div class="example-command">fastcp-recv</div><div class="example-description">Basic usage example</div></div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content usecases-content">
+                            <div class="use-cases-grid">
+                                <div class="use-case-item"><div class="use-case-title">General Usage</div><div class="use-case-description">Common use cases for this command</div></div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="command-card" id="fastcp-dedup">
+                        <div class="command-header">
+                            <div class="command-name">fastcp-dedup</div>
+                            <div class="command-badges"><span class="badge badge-platform">windows, linux, darwin</span></div>
+                        </div>
+                        <div class="command-description">Deduplication analysis and statistics</div>
+                        <div class="command-usage">
+                            <button class="copy-button" onclick="copyToClipboard('fastcp-dedup <path> [analyze|clean] [--dry-run] [--threshold <size>]')">Copy</button>
+                            fastcp-dedup <path> [analyze|clean] [--dry-run] [--threshold <size>]
+                        </div>
+                        
+                        <div class="tabs">
+                            <button class="tab" onclick="showTab('options', 'fastcp-dedup')">Options</button>
+                            <button class="tab" onclick="showTab('examples', 'fastcp-dedup')">Examples</button>
+                            <button class="tab" onclick="showTab('usecases', 'fastcp-dedup')">Use Cases</button>
+                        </div>
+                        
+                        <div class="tab-content options-content">
+                            <div class="options-grid">
+                                
+<div class="detailed-help">
+    <div class="examples-section">
+        <div class="examples-title">💡 Basic Usage</div>
+        <div class="example-item">
+            <div class="example-description">This command provides essential functionality for SuperShell operations. Use the command with its available options as shown in the usage syntax above.</div>
+        </div>
+    </div>
+</div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content examples-content">
+                            <div class="examples-grid">
+                                <div class="example-item"><div class="example-command">fastcp-dedup</div><div class="example-description">Basic usage example</div></div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content usecases-content">
+                            <div class="use-cases-grid">
+                                <div class="use-case-item"><div class="use-case-title">General Usage</div><div class="use-case-description">Common use cases for this command</div></div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="command-card" id="fastcp-restore">
+                        <div class="command-header">
+                            <div class="command-name">fastcp-restore</div>
+                            <div class="command-badges"><span class="badge badge-platform">windows, linux, darwin</span></div>
+                        </div>
+                        <div class="command-description">Restore files from cloud storage (S3-compatible)</div>
+                        <div class="command-usage">
+                            <button class="copy-button" onclick="copyToClipboard('fastcp-restore <bucket> <backup-id> <destination> [--verify] [--overwrite]')">Copy</button>
+                            fastcp-restore <bucket> <backup-id> <destination> [--verify] [--overwrite]
+                        </div>
+                        
+                        <div class="tabs">
+                            <button class="tab" onclick="showTab('options', 'fastcp-restore')">Options</button>
+                            <button class="tab" onclick="showTab('examples', 'fastcp-restore')">Examples</button>
+                            <button class="tab" onclick="showTab('usecases', 'fastcp-restore')">Use Cases</button>
+                        </div>
+                        
+                        <div class="tab-content options-content">
+                            <div class="options-grid">
+                                
+<div class="detailed-help">
+    <div class="examples-section">
+        <div class="examples-title">💡 Basic Usage</div>
+        <div class="example-item">
+            <div class="example-description">This command provides essential functionality for SuperShell operations. Use the command with its available options as shown in the usage syntax above.</div>
+        </div>
+    </div>
+</div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content examples-content">
+                            <div class="examples-grid">
+                                <div class="example-item"><div class="example-command">fastcp-restore</div><div class="example-description">Basic usage example</div></div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content usecases-content">
+                            <div class="use-cases-grid">
+                                <div class="use-case-item"><div class="use-case-title">General Usage</div><div class="use-case-description">Common use cases for this command</div></div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="command-card" id="fastcp-backup">
+                        <div class="command-header">
+                            <div class="command-name">fastcp-backup</div>
+                            <div class="command-badges"><span class="badge badge-platform">windows, linux, darwin</span></div>
+                        </div>
+                        <div class="command-description">Backup files to cloud storage (S3-compatible)</div>
+                        <div class="command-usage">
+                            <button class="copy-button" onclick="copyToClipboard('fastcp-backup <source> <bucket> [--encrypt] [--compress] [--incremental]')">Copy</button>
+                            fastcp-backup <source> <bucket> [--encrypt] [--compress] [--incremental]
+                        </div>
+                        
+                        <div class="tabs">
+                            <button class="tab" onclick="showTab('options', 'fastcp-backup')">Options</button>
+                            <button class="tab" onclick="showTab('examples', 'fastcp-backup')">Examples</button>
+                            <button class="tab" onclick="showTab('usecases', 'fastcp-backup')">Use Cases</button>
+                        </div>
+                        
+                        <div class="tab-content options-content">
+                            <div class="options-grid">
+                                
+<div class="detailed-help">
+    <div class="examples-section">
+        <div class="examples-title">💡 Basic Usage</div>
+        <div class="example-item">
+            <div class="example-description">This command provides essential functionality for SuperShell operations. Use the command with its available options as shown in the usage syntax above.</div>
+        </div>
+    </div>
+</div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content examples-content">
+                            <div class="examples-grid">
+                                <div class="example-item"><div class="example-command">fastcp-backup</div><div class="example-description">Basic usage example</div></div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content usecases-content">
+                            <div class="use-cases-grid">
+                                <div class="use-case-item"><div class="use-case-title">General Usage</div><div class="use-case-description">Common use cases for this command</div></div>
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
+
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Mobile sidebar toggle
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('open');
+        }
+
+        // Search functionality
+        function filterCommands(searchTerm) {
+            const navItems = document.querySelectorAll('.nav-item');
+            const sections = document.querySelectorAll('.nav-section');
+            
+            searchTerm = searchTerm.toLowerCase();
+            
+            navItems.forEach(item => {
+                const commandName = item.textContent.toLowerCase();
+                const isVisible = commandName.includes(searchTerm);
+                item.style.display = isVisible ? 'block' : 'none';
+            });
+            
+            // Show/hide sections based on visible items
+            sections.forEach(section => {
+                const visibleItems = section.querySelectorAll('.nav-item[style="display: block"], .nav-item:not([style])');
+                const hasVisibleItems = Array.from(visibleItems).some(item => 
+                    !searchTerm || item.textContent.toLowerCase().includes(searchTerm)
+                );
+                section.style.display = hasVisibleItems ? 'block' : 'none';
+            });
+        }
+
+        // Copy to clipboard functionality
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                // Show feedback
+                const button = event.target;
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.style.background = 'rgba(46, 204, 113, 0.8)';
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.style.background = 'rgba(255, 255, 255, 0.2)';
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+            });
+        }
+
+        // Tab functionality
+        function showTab(tabName, commandId) {
+            // Hide all tab contents for this command
+            const command = document.getElementById(commandId);
+            const tabContents = command.querySelectorAll('.tab-content');
+            const tabs = command.querySelectorAll('.tab');
+            
+            tabContents.forEach(content => content.classList.remove('active'));
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            // Show selected tab
+            const selectedContent = command.querySelector('.' + tabName + '-content');
+            const selectedTab = command.querySelector('[onclick*="' + tabName + '"]');
+            
+            if (selectedContent) selectedContent.classList.add('active');
+            if (selectedTab) selectedTab.classList.add('active');
+        }
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('.nav-item').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href').substring(1);
+                const targetElement = document.getElementById(targetId);
+                
+                if (targetElement) {
+                    // Update active nav item
+                    document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Smooth scroll to target
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                    
+                    // Close mobile sidebar
+                    if (window.innerWidth <= 768) {
+                        document.getElementById('sidebar').classList.remove('open');
+                    }
+                }
+            });
+        });
+
+        // Highlight active section on scroll
+        window.addEventListener('scroll', () => {
+            const sections = document.querySelectorAll('.command-card');
+            const navItems = document.querySelectorAll('.nav-item');
+            
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 100;
+                if (window.pageYOffset >= sectionTop) {
+                    current = section.getAttribute('id');
+                }
+            });
+            
+            navItems.forEach(item => {
+                item.classList.remove('active');
+                if (item.getAttribute('href') === '#' + current) {
+                    item.classList.add('active');
+                }
+            });
+        });
+
+        // Initialize first tab as active for commands with tabs
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.command-card').forEach(command => {
+                const firstTab = command.querySelector('.tab');
+                const firstContent = command.querySelector('.tab-content');
+                
+                if (firstTab && firstContent) {
+                    firstTab.classList.add('active');
+                    firstContent.classList.add('active');
+                }
+            });
+        });
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', (e) => {
+            const sidebar = document.getElementById('sidebar');
+            const menuBtn = document.querySelector('.mobile-menu-btn');
+            
+            if (window.innerWidth <= 768 && 
+                !sidebar.contains(e.target) && 
+                !menuBtn.contains(e.target) && 
+                sidebar.classList.contains('open')) {
+                sidebar.classList.remove('open');
+            }
+        });
+    </script>
+</body>
+</html>

@@ -762,7 +762,7 @@ func modernNetstatDisplay(entries []NetstatEntry, filter string) {
 	fmt.Printf("  Total: %d  ", total)
 	color.New(color.BgGreen, color.FgBlack).Printf(" ESTABLISHED: %d ", established)
 	color.New(color.BgYellow, color.FgBlack).Printf(" LISTENING: %d ", listening)
-	fmt.Println("\n")
+	fmt.Println()
 
 	// Print headers
 	color.New(color.FgCyan, color.Bold).Printf("%-8s %-25s %-25s %-15s %-8s\n", "PROTO", "LOCAL", "REMOTE", "STATE", "PID")

@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SuperShell Command Reference</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #34495e;
+            border-left: 4px solid #3498db;
+            padding-left: 15px;
+            margin-top: 30px;
+        }
+        .command {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .command-name {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #2980b9;
+            margin-bottom: 5px;
+        }
+        .command-description {
+            color: #555;
+            margin-bottom: 10px;
+        }
+        .command-usage {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 8px 12px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        .toc {
+            background: #ecf0f1;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 30px;
+        }
+        .toc h3 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        .toc ul {
+            columns: 3;
+            column-gap: 30px;
+        }
+        .toc li {
+            margin-bottom: 5px;
+        }
+        .toc a {
+            text-decoration: none;
+            color: #3498db;
+        }
+        .toc a:hover {
+            text-decoration: underline;
+        }
+        .category {
+            margin-bottom: 40px;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #bdc3c7;
+            color: #7f8c8d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 SuperShell Command Reference</h1>
+        <p style="text-align: center; color: #7f8c8d;">
+            Generated on August 16, 2025 at 10:04 PM
+        </p>
+
+        <div class="toc">
+            <h3>📋 Table of Contents</h3>
+            <ul>
+                <li><a href="#ver">ver</a></li>
+                <li><a href="#wget">wget</a></li>
+                <li><a href="#sysinfo">sysinfo</a></li>
+                <li><a href="#cp">cp</a></li>
+                <li><a href="#tracert">tracert</a></li>
+                <li><a href="#nslookup">nslookup</a></li>
+                <li><a href="#ipconfig">ipconfig</a></li>
+                <li><a href="#arp">arp</a></li>
+                <li><a href="#dir">dir</a></li>
+                <li><a href="#pwd">pwd</a></li>
+                <li><a href="#cd">cd</a></li>
+                <li><a href="#cat">cat</a></li>
+                <li><a href="#mkdir">mkdir</a></li>
+                <li><a href="#clear">clear</a></li>
+                <li><a href="#helphtml">helphtml</a></li>
+                <li><a href="#ls">ls</a></li>
+                <li><a href="#netstat">netstat</a></li>
+                <li><a href="#help">help</a></li>
+                <li><a href="#whoami">whoami</a></li>
+                <li><a href="#exit">exit</a></li>
+                <li><a href="#rm">rm</a></li>
+                <li><a href="#mv">mv</a></li>
+                <li><a href="#speedtest">speedtest</a></li>
+                <li><a href="#rmdir">rmdir</a></li>
+                <li><a href="#ping">ping</a></li>
+                <li><a href="#hostname">hostname</a></li>
+                <li><a href="#echo">echo</a></li>
+                <li><a href="#portscan">portscan</a></li>
+                <li><a href="#route">route</a></li>
+            </ul>
+        </div>
+
+        <div class="category">
+            <h2>All Commands</h2>
+
+            <div class="command" id="ver">
+                <div class="command-name">ver</div>
+                <div class="command-description">Display version information</div>
+                <div class="command-usage">ver [-v|--verbose]</div>
+            </div>
+
+            <div class="command" id="wget">
+                <div class="command-name">wget</div>
+                <div class="command-description">Download files from URLs</div>
+                <div class="command-usage">wget [-v] <url> [filename]</div>
+            </div>
+
+            <div class="command" id="sysinfo">
+                <div class="command-name">sysinfo</div>
+                <div class="command-description">Display comprehensive system information</div>
+                <div class="command-usage">sysinfo [-v|--verbose]</div>
+            </div>
+
+            <div class="command" id="cp">
+                <div class="command-name">cp</div>
+                <div class="command-description">Copy files and directories</div>
+                <div class="command-usage">cp [-r] [-v] <source> <destination></div>
+            </div>
+
+            <div class="command" id="tracert">
+                <div class="command-name">tracert</div>
+                <div class="command-description">Trace the route to a host with live feedback</div>
+                <div class="command-usage">tracert [-h maxhops] <host></div>
+            </div>
+
+            <div class="command" id="nslookup">
+                <div class="command-name">nslookup</div>
+                <div class="command-description">Query DNS records for a domain with enhanced output</div>
+                <div class="command-usage">nslookup <domain> [server]</div>
+            </div>
+
+            <div class="command" id="ipconfig">
+                <div class="command-name">ipconfig</div>
+                <div class="command-description">Display network interface configuration</div>
+                <div class="command-usage">ipconfig [/all] [/release] [/renew] [/flushdns]</div>
+            </div>
+
+            <div class="command" id="arp">
+                <div class="command-name">arp</div>
+                <div class="command-description">Display and manage ARP table</div>
+                <div class="command-usage">arp [-a] [-d <ip>] [ip_address]</div>
+            </div>
+
+            <div class="command" id="dir">
+                <div class="command-name">dir</div>
+                <div class="command-description">List directory contents (Windows-style)</div>
+                <div class="command-usage">dir [directory]</div>
+            </div>
+
+            <div class="command" id="pwd">
+                <div class="command-name">pwd</div>
+                <div class="command-description">Print the current working directory</div>
+                <div class="command-usage">pwd</div>
+            </div>
+
+            <div class="command" id="cd">
+                <div class="command-name">cd</div>
+                <div class="command-description">Change the current directory</div>
+                <div class="command-usage">cd <directory></div>
+            </div>
+
+            <div class="command" id="cat">
+                <div class="command-name">cat</div>
+                <div class="command-description">Display file contents</div>
+                <div class="command-usage">cat <file1> [file2] ...</div>
+            </div>
+
+            <div class="command" id="mkdir">
+                <div class="command-name">mkdir</div>
+                <div class="command-description">Create directories</div>
+                <div class="command-usage">mkdir [-p] <directory1> [directory2] ...</div>
+            </div>
+
+            <div class="command" id="clear">
+                <div class="command-name">clear</div>
+                <div class="command-description">Clear the terminal screen</div>
+                <div class="command-usage">clear</div>
+            </div>
+
+            <div class="command" id="helphtml">
+                <div class="command-name">helphtml</div>
+                <div class="command-description">Generate HTML help documentation for all commands</div>
+                <div class="command-usage">helphtml [filename]</div>
+            </div>
+
+            <div class="command" id="ls">
+                <div class="command-name">ls</div>
+                <div class="command-description">List directory contents with rich formatting</div>
+                <div class="command-usage">ls [-a] [-l] [-h] [directory|pattern]</div>
+            </div>
+
+            <div class="command" id="netstat">
+                <div class="command-name">netstat</div>
+                <div class="command-description">Display network connections, routing tables, and network statistics</div>
+                <div class="command-usage">netstat [-a] [-n] [-p] [-r] [-s]</div>
+            </div>
+
+            <div class="command" id="help">
+                <div class="command-name">help</div>
+                <div class="command-description">Show available commands and their descriptions</div>
+                <div class="command-usage">help [command]</div>
+            </div>
+
+            <div class="command" id="whoami">
+                <div class="command-name">whoami</div>
+                <div class="command-description">Display current user information</div>
+                <div class="command-usage">whoami [-v|--verbose]</div>
+            </div>
+
+            <div class="command" id="exit">
+                <div class="command-name">exit</div>
+                <div class="command-description">Exit the shell</div>
+                <div class="command-usage">exit [code]</div>
+            </div>
+
+            <div class="command" id="rm">
+                <div class="command-name">rm</div>
+                <div class="command-description">Remove files and directories</div>
+                <div class="command-usage">rm [-r] [-f] <file1> [file2] ...</div>
+            </div>
+
+            <div class="command" id="mv">
+                <div class="command-name">mv</div>
+                <div class="command-description">Move/rename files</div>
+                <div class="command-usage">mv <source> <destination></div>
+            </div>
+
+            <div class="command" id="speedtest">
+                <div class="command-name">speedtest</div>
+                <div class="command-description">Perform network speed test</div>
+                <div class="command-usage">speedtest [-s] [-q] [--download-only] [--upload-only]</div>
+            </div>
+
+            <div class="command" id="rmdir">
+                <div class="command-name">rmdir</div>
+                <div class="command-description">Remove empty directories</div>
+                <div class="command-usage">rmdir <directory>...</div>
+            </div>
+
+            <div class="command" id="ping">
+                <div class="command-name">ping</div>
+                <div class="command-description">Send ICMP echo requests to a host with live feedback</div>
+                <div class="command-usage">ping [-c count] [-t timeout] <host></div>
+            </div>
+
+            <div class="command" id="hostname">
+                <div class="command-name">hostname</div>
+                <div class="command-description">Display or set the system hostname</div>
+                <div class="command-usage">hostname [-v|--verbose] [-i|--ip]</div>
+            </div>
+
+            <div class="command" id="echo">
+                <div class="command-name">echo</div>
+                <div class="command-description">Display text to the console</div>
+                <div class="command-usage">echo <text></div>
+            </div>
+
+            <div class="command" id="portscan">
+                <div class="command-name">portscan</div>
+                <div class="command-description">Fast TCP port scanner with live feedback</div>
+                <div class="command-usage">portscan [-p ports] [-t timeout] [-c concurrency] <host></div>
+            </div>
+
+            <div class="command" id="route">
+                <div class="command-name">route</div>
+                <div class="command-description">Display and manage routing table</div>
+                <div class="command-usage">route [print] [-4|-6] [add|delete] [destination] [gateway]</div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>SuperShell v2.0.0 - Advanced Command Line Interface</p>
+            <p>Generated by helphtml command</p>
+        </div>
+    </div>
+</body>
+</html>

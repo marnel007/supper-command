@@ -1,0 +1,1657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SuperShell Command Reference</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #34495e;
+            border-left: 4px solid #3498db;
+            padding-left: 15px;
+            margin-top: 30px;
+        }
+        .command {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .command-name {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #2980b9;
+            margin-bottom: 5px;
+        }
+        .command-description {
+            color: #555;
+            margin-bottom: 10px;
+        }
+        .command-usage {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 8px 12px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            margin-bottom: 8px;
+        }
+        .command-platforms {
+            font-size: 0.85em;
+            color: #7f8c8d;
+            margin-bottom: 5px;
+        }
+        .privilege-warning {
+            background: #e74c3c;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-size: 0.8em;
+            font-weight: bold;
+            display: inline-block;
+            margin-top: 5px;
+        }
+        .toc {
+            background: #ecf0f1;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 30px;
+        }
+        .toc h3 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        .toc ul {
+            columns: 3;
+            column-gap: 30px;
+        }
+        .toc li {
+            margin-bottom: 5px;
+        }
+        .toc a {
+            text-decoration: none;
+            color: #3498db;
+        }
+        .toc a:hover {
+            text-decoration: underline;
+        }
+        .category {
+            margin-bottom: 40px;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #bdc3c7;
+            color: #7f8c8d;
+        }
+        .detailed-help {
+            margin-top: 15px;
+            padding: 15px;
+            background: #ffffff;
+            border-left: 3px solid #3498db;
+            border-radius: 3px;
+        }
+        .options-section {
+            margin-bottom: 20px;
+        }
+        .options-title {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        .option-item {
+            margin-bottom: 8px;
+            padding: 5px 0;
+        }
+        .option-flag {
+            font-family: 'Courier New', monospace;
+            background: #ecf0f1;
+            padding: 2px 6px;
+            border-radius: 3px;
+            color: #2c3e50;
+            font-weight: bold;
+        }
+        .option-description {
+            margin-left: 10px;
+            color: #555;
+        }
+        .examples-section {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            border: 1px solid #e9ecef;
+        }
+        .examples-title {
+            font-weight: bold;
+            color: #27ae60;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+        .example-item {
+            margin-bottom: 15px;
+            padding: 10px;
+            background: white;
+            border-radius: 3px;
+            border-left: 3px solid #27ae60;
+        }
+        .example-command {
+            font-family: 'Courier New', monospace;
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 8px 12px;
+            border-radius: 3px;
+            margin-bottom: 8px;
+            font-size: 0.9em;
+        }
+        .example-description {
+            color: #555;
+            font-size: 0.95em;
+        }
+        .use-cases-section {
+            margin-top: 20px;
+            padding: 15px;
+            background: #fff3cd;
+            border-radius: 5px;
+            border: 1px solid #ffeaa7;
+        }
+        .use-cases-title {
+            font-weight: bold;
+            color: #856404;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+        .use-case-item {
+            margin-bottom: 12px;
+            padding: 8px;
+            background: white;
+            border-radius: 3px;
+            border-left: 3px solid #f39c12;
+        }
+        .use-case-title {
+            font-weight: bold;
+            color: #d68910;
+            margin-bottom: 5px;
+        }
+        .use-case-description {
+            color: #555;
+            font-size: 0.95em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 SuperShell Command Reference</h1>
+        <p style="text-align: center; color: #7f8c8d;">
+            Generated on August 17, 2025 at 12:03 AM
+        </p>
+
+        <div class="toc">
+            <h3>📋 Table of Contents</h3>
+            <ul>
+                <li><a href="#exit">exit</a></li>
+                <li><a href="#winupdate">winupdate</a></li>
+                <li><a href="#netstat">netstat</a></li>
+                <li><a href="#wget">wget</a></li>
+                <li><a href="#whoami">whoami</a></li>
+                <li><a href="#echo">echo</a></li>
+                <li><a href="#nslookup">nslookup</a></li>
+                <li><a href="#fastcp-backup">fastcp-backup</a></li>
+                <li><a href="#clear">clear</a></li>
+                <li><a href="#hostname">hostname</a></li>
+                <li><a href="#killtask">killtask</a></li>
+                <li><a href="#mkdir">mkdir</a></li>
+                <li><a href="#portscan">portscan</a></li>
+                <li><a href="#arp">arp</a></li>
+                <li><a href="#speedtest">speedtest</a></li>
+                <li><a href="#helphtml">helphtml</a></li>
+                <li><a href="#ping">ping</a></li>
+                <li><a href="#route">route</a></li>
+                <li><a href="#sniff">sniff</a></li>
+                <li><a href="#fastcp-recv">fastcp-recv</a></li>
+                <li><a href="#dir">dir</a></li>
+                <li><a href="#cd">cd</a></li>
+                <li><a href="#cat">cat</a></li>
+                <li><a href="#rm">rm</a></li>
+                <li><a href="#ipconfig">ipconfig</a></li>
+                <li><a href="#help">help</a></li>
+                <li><a href="#lookup">lookup</a></li>
+                <li><a href="#pwd">pwd</a></li>
+                <li><a href="#rmdir">rmdir</a></li>
+                <li><a href="#tracert">tracert</a></li>
+                <li><a href="#fastcp-restore">fastcp-restore</a></li>
+                <li><a href="#mv">mv</a></li>
+                <li><a href="#fastcp-dedup">fastcp-dedup</a></li>
+                <li><a href="#sysinfo">sysinfo</a></li>
+                <li><a href="#ver">ver</a></li>
+                <li><a href="#ls">ls</a></li>
+                <li><a href="#cp">cp</a></li>
+                <li><a href="#netdiscover">netdiscover</a></li>
+                <li><a href="#fastcp-send">fastcp-send</a></li>
+            </ul>
+        </div>
+
+        <div class="category">
+            <h2>System Commands</h2>
+
+            <div class="command" id="exit">
+                <div class="command-name">exit</div>
+                <div class="command-description">Exit the shell</div>
+                <div class="command-usage">exit [code]</div>
+                <div class="command-platforms">Platforms: windows, linux, darwin</div>
+                
+                
+<div class="detailed-help">
+    <div class="examples-section">
+        <div class="examples-title">💡 Basic Usage</div>
+        <div class="example-item">
+            <div class="example-description">This command provides essential functionality for SuperShell operations. Use the command with its available options as shown in the usage syntax above.</div>
+        </div>
+    </div>
+</div>
+            </div>
+
+            <div class="command" id="winupdate">
+                <div class="command-name">winupdate</div>
+                <div class="command-description">Windows Update management and information</div>
+                <div class="command-usage">winupdate [list|check|install|history] [--auto] [--reboot]</div>
+                <div class="command-platforms">Platforms: windows</div>
+                <div class="privilege-warning">⚠️ Requires Administrator Privileges</div>
+                
+<div class="detailed-help">
+    <div class="examples-section">
+        <div class="examples-title">💡 Basic Usage</div>
+        <div class="example-item">
+            <div class="example-description">This command provides essential functionality for SuperShell operations. Use the command with its available options as shown in the usage syntax above.</div>
+        </div>
+    </div>
+</div>
+            </div>
+
+            <div class="command" id="whoami">
+                <div class="command-name">whoami</div>
+                <div class="command-description">Display current user information</div>
+                <div class="command-usage">whoami [-v|--verbose]</div>
+                <div class="command-platforms">Platforms: windows, linux, darwin</div>
+                
+                
+<div class="detailed-help">
+    <div class="examples-section">
+        <div class="examples-title">💡 Basic Usage</div>
+        <div class="example-item">
+            <div class="example-description">This command provides essential functionality for SuperShell operations. Use the command with its available options as shown in the usage syntax above.</div>
+        </div>
+    </div>
+</div>
+            </div>
+
+            <div class="command" id="clear">
+                <div class="command-name">clear</div>
+                <div class="command-description">Clear the terminal screen</div>
+                <div class="command-usage">clear</div>
+                <div class="command-platforms">Platforms: windows, linux, darwin</div>
+                
+                
+<div class="detailed-help">
+    <div class="examples-section">
+        <div class="examples-title">💡 Basic Usage</div>
+        <div class="example-item">
+            <div class="example-description">This command provides essential functionality for SuperShell operations. Use the command with its available options as shown in the usage syntax above.</div>
+        </div>
+    </div>
+</div>
+            </div>
+
+            <div class="command" id="hostname">
+                <div class="command-name">hostname</div>
+                <div class="command-description">Display or set the system hostname</div>
+                <div class="command-usage">hostname [-v|--verbose] [-i|--ip]</div>
+                <div class="command-platforms">Platforms: windows, linux, darwin</div>
+                
+                
+<div class="detailed-help">
+    <div class="examples-section">
+        <div class="examples-title">💡 Basic Usage</div>
+        <div class="example-item">
+            <div class="example-description">This command provides essential functionality for SuperShell operations. Use the command with its available options as shown in the usage syntax above.</div>
+        </div>
+    </div>
+</div>
+            </div>
+
+            <div class="command" id="killtask">
+                <div class="command-name">killtask</div>
+                <div class="command-description">Terminate processes by PID or process name</div>
+                <div class="command-usage">killtask [-f] [-t] <pid|process_name> [pid2] [process_name2] ...</div>
+                <div class="command-platforms">Platforms: windows, linux, darwin</div>
+                <div class="privilege-warning">⚠️ Requires Administrator Privileges</div>
+                
+<div class="detailed-help">
+    <div class="options-section">
+        <div class="options-title">🔧 Command Options</div>
+        <div class="option-item">
+            <span class="option-flag">-f, --force</span>
+            <span class="option-description">Force terminate processes immediately (SIGKILL on Unix)</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">-t, --tree</span>
+            <span class="option-description">Terminate process tree including child processes</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">&lt;pid&gt;</span>
+            <span class="option-description">Process ID to terminate</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">&lt;process_name&gt;</span>
+            <span class="option-description">Process name to terminate (e.g., notepad.exe)</span>
+        </div>
+    </div>
+    
+    <div class="examples-section">
+        <div class="examples-title">💡 Usage Examples</div>
+        <div class="example-item">
+            <div class="example-command">killtask 1234</div>
+            <div class="example-description">Terminate process with PID 1234</div>
+        </div>
+        <div class="example-item">
+            <div class="example-command">killtask notepad</div>
+            <div class="example-description">Terminate all notepad processes</div>
+        </div>
+        <div class="example-item">
+            <div class="example-command">killtask -f chrome</div>
+            <div class="example-description">Force terminate all Chrome processes immediately</div>
+        </div>
+        <div class="example-item">
+            <div class="example-command">killtask -t explorer</div>
+            <div class="example-description">Terminate Explorer and all child processes</div>
+        </div>
+        <div class="example-item">
+            <div class="example-command">killtask 1234 5678 notepad</div>
+            <div class="example-description">Terminate multiple processes in one command</div>
+        </div>
+    </div>
+    
+    <div class="use-cases-section">
+        <div class="use-cases-title">🎯 Common Use Cases</div>
+        <div class="use-case-item">
+            <div class="use-case-title">Process Management</div>
+            <div class="use-case-description">Terminate unresponsive or unwanted processes</div>
+        </div>
+        <div class="use-case-item">
+            <div class="use-case-title">System Cleanup</div>
+            <div class="use-case-description">Clean up multiple processes or process trees</div>
+        </div>
+        <div class="use-case-item">
+            <div class="use-case-title">Security Response</div>
+            <div class="use-case-description">Quickly terminate suspicious or malicious processes</div>
+        </div>
+        <div class="use-case-item">
+            <div class="use-case-title">Resource Management</div>
+            <div class="use-case-description">Free up system resources by terminating resource-heavy processes</div>
+        </div>
+    </div>
+</div>
+            </div>
+
+            <div class="command" id="helphtml">
+                <div class="command-name">helphtml</div>
+                <div class="command-description">Generate HTML help documentation for all commands</div>
+                <div class="command-usage">helphtml [filename]</div>
+                <div class="command-platforms">Platforms: windows, linux, darwin</div>
+                
+                
+<div class="detailed-help">
+    <div class="examples-section">
+        <div class="examples-title">💡 Basic Usage</div>
+        <div class="example-item">
+            <div class="example-description">This command provides essential functionality for SuperShell operations. Use the command with its available options as shown in the usage syntax above.</div>
+        </div>
+    </div>
+</div>
+            </div>
+
+            <div class="command" id="help">
+                <div class="command-name">help</div>
+                <div class="command-description">Show available commands and their descriptions</div>
+                <div class="command-usage">help [command]</div>
+                <div class="command-platforms">Platforms: windows, linux, darwin</div>
+                
+                
+<div class="detailed-help">
+    <div class="options-section">
+        <div class="options-title">🔧 Command Options</div>
+        <div class="option-item">
+            <span class="option-flag">[command]</span>
+            <span class="option-description">Get detailed help for a specific command</span>
+        </div>
+    </div>
+    
+    <div class="examples-section">
+        <div class="examples-title">💡 Usage Examples</div>
+        <div class="example-item">
+            <div class="example-command">help</div>
+            <div class="example-description">Show all available commands with descriptions</div>
+        </div>
+        <div class="example-item">
+            <div class="example-command">help ping</div>
+            <div class="example-description">Get detailed help for the ping command</div>
+        </div>
+        <div class="example-item">
+            <div class="example-command">help sniff</div>
+            <div class="example-description">Get comprehensive help for the sniff command with all options</div>
+        </div>
+    </div>
+    
+    <div class="use-cases-section">
+        <div class="use-cases-title">🎯 Common Use Cases</div>
+        <div class="use-case-item">
+            <div class="use-case-title">Command Reference</div>
+            <div class="use-case-description">Quick reference for command syntax and options</div>
+        </div>
+        <div class="use-case-item">
+            <div class="use-case-title">Learning Tool</div>
+            <div class="use-case-description">Learn about available commands and their capabilities</div>
+        </div>
+        <div class="use-case-item">
+            <div class="use-case-title">Troubleshooting</div>
+            <div class="use-case-description">Get help when commands aren't working as expected</div>
+        </div>
+    </div>
+</div>
+            </div>
+
+            <div class="command" id="lookup">
+                <div class="command-name">lookup</div>
+                <div class="command-description">Intelligent command discovery and suggestions</div>
+                <div class="command-usage">lookup [-m] [-s] [-c] [-t <task>] [query]</div>
+                <div class="command-platforms">Platforms: windows, linux, darwin</div>
+                
+                
+<div class="detailed-help">
+    <div class="options-section">
+        <div class="options-title">🔧 Command Options</div>
+        <div class="option-item">
+            <span class="option-flag">-s, --similar</span>
+            <span class="option-description">Show similar commands using fuzzy matching</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">-c, --categories</span>
+            <span class="option-description">Show all command categories</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">-t, --task &lt;task&gt;</span>
+            <span class="option-description">Get task-based command suggestions</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">-m, --menu</span>
+            <span class="option-description">Show interactive menu for command exploration</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">[query]</span>
+            <span class="option-description">Search term for command lookup</span>
+        </div>
+    </div>
+    
+    <div class="examples-section">
+        <div class="examples-title">💡 Usage Examples</div>
+        <div class="example-item">
+            <div class="example-command">lookup ping</div>
+            <div class="example-description">Find commands related to 'ping' - shows exact, partial, and similar matches</div>
+        </div>
+        <div class="example-item">
+            <div class="example-command">lookup pin</div>
+            <div class="example-description">Find all commands containing 'pin' - will find 'ping' and similar commands</div>
+        </div>
+        <div class="example-item">
+            <div class="example-command">lookup network</div>
+            <div class="example-description">Find all network-related commands by description matching</div>
+        </div>
+        <div class="example-item">
+            <div class="example-command">lookup -c</div>
+            <div class="example-description">Show all command categories with command counts</div>
+        </div>
+        <div class="example-item">
+            <div class="example-command">lookup -t network</div>
+            <div class="example-description">Get task-based suggestions for network operations</div>
+        </div>
+        <div class="example-item">
+            <div class="example-command">lookup -m</div>
+            <div class="example-description">Open interactive menu for command exploration</div>
+        </div>
+    </div>
+    
+    <div class="use-cases-section">
+        <div class="use-cases-title">🎯 Common Use Cases</div>
+        <div class="use-case-item">
+            <div class="use-case-title">Command Discovery</div>
+            <div class="use-case-description">Find commands when you only remember part of the name or functionality</div>
+        </div>
+        <div class="use-case-item">
+            <div class="use-case-title">Task-Based Help</div>
+            <div class="use-case-description">Get command recommendations based on what you want to accomplish</div>
+        </div>
+        <div class="use-case-item">
+            <div class="use-case-title">Learning Tool</div>
+            <div class="use-case-description">Explore available commands and learn about SuperShell capabilities</div>
+        </div>
+        <div class="use-case-item">
+            <div class="use-case-title">Quick Reference</div>
+            <div class="use-case-description">Browse commands by category or search for specific functionality</div>
+        </div>
+    </div>
+</div>
+            </div>
+
+            <div class="command" id="sysinfo">
+                <div class="command-name">sysinfo</div>
+                <div class="command-description">Display comprehensive system information</div>
+                <div class="command-usage">sysinfo [-v|--verbose]</div>
+                <div class="command-platforms">Platforms: windows, linux, darwin</div>
+                
+                
+<div class="detailed-help">
+    <div class="options-section">
+        <div class="options-title">🔧 Command Options</div>
+        <div class="option-item">
+            <span class="option-flag">-v, --verbose</span>
+            <span class="option-description">Show detailed system information</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">--cpu</span>
+            <span class="option-description">Show only CPU information</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">--memory</span>
+            <span class="option-description">Show only memory information</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">--disk</span>
+            <span class="option-description">Show only disk information</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">--network</span>
+            <span class="option-description">Show only network information</span>
+        </div>
+    </div>
+    
+    <div class="examples-section">
+        <div class="examples-title">💡 Usage Examples</div>
+        <div class="example-item">
+            <div class="example-command">sysinfo</div>
+            <div class="example-description">Display comprehensive system information</div>
+        </div>
+        <div class="example-item">
+            <div class="example-command">sysinfo -v</div>
+            <div class="example-description">Show detailed verbose system information</div>
+        </div>
+        <div class="example-item">
+            <div class="example-command">sysinfo --cpu</div>
+            <div class="example-description">Show only CPU details and specifications</div>
+        </div>
+        <div class="example-item">
+            <div class="example-command">sysinfo --memory</div>
+            <div class="example-description">Show only memory usage and specifications</div>
+        </div>
+    </div>
+    
+    <div class="use-cases-section">
+        <div class="use-cases-title">🎯 Common Use Cases</div>
+        <div class="use-case-item">
+            <div class="use-case-title">System Monitoring</div>
+            <div class="use-case-description">Monitor system resources, performance, and health status</div>
+        </div>
+        <div class="use-case-item">
+            <div class="use-case-title">Hardware Inventory</div>
+            <div class="use-case-description">Get detailed hardware specifications and system configuration</div>
+        </div>
+        <div class="use-case-item">
+            <div class="use-case-title">Troubleshooting</div>
+            <div class="use-case-description">Diagnose system issues and resource bottlenecks</div>
+        </div>
+    </div>
+</div>
+            </div>
+
+            <div class="command" id="ver">
+                <div class="command-name">ver</div>
+                <div class="command-description">Display version information</div>
+                <div class="command-usage">ver [-v|--verbose]</div>
+                <div class="command-platforms">Platforms: windows, linux, darwin</div>
+                
+                
+<div class="detailed-help">
+    <div class="options-section">
+        <div class="options-title">🔧 Command Options</div>
+        <div class="option-item">
+            <span class="option-flag">-v, --verbose</span>
+            <span class="option-description">Show detailed version information with features and runtime details</span>
+        </div>
+    </div>
+    
+    <div class="examples-section">
+        <div class="examples-title">💡 Usage Examples</div>
+        <div class="example-item">
+            <div class="example-command">ver</div>
+            <div class="example-description">Show basic version information</div>
+        </div>
+        <div class="example-item">
+            <div class="example-command">ver -v</div>
+            <div class="example-description">Show comprehensive version details with features and system info</div>
+        </div>
+    </div>
+    
+    <div class="use-cases-section">
+        <div class="use-cases-title">🎯 Common Use Cases</div>
+        <div class="use-case-item">
+            <div class="use-case-title">Version Checking</div>
+            <div class="use-case-description">Verify SuperShell version for compatibility or support</div>
+        </div>
+        <div class="use-case-item">
+            <div class="use-case-title">System Information</div>
+            <div class="use-case-description">Get runtime and build information for troubleshooting</div>
+        </div>
+        <div class="use-case-item">
+            <div class="use-case-title">Feature Discovery</div>
+            <div class="use-case-description">See what features are available in your version</div>
+        </div>
+    </div>
+</div>
+            </div>
+        </div>
+
+        <div class="category">
+            <h2>Filesystem Commands</h2>
+
+            <div class="command" id="echo">
+                <div class="command-name">echo</div>
+                <div class="command-description">Display text to the console</div>
+                <div class="command-usage">echo <text></div>
+                <div class="command-platforms">Platforms: windows, linux, darwin</div>
+                
+                
+<div class="detailed-help">
+    <div class="examples-section">
+        <div class="examples-title">💡 Basic Usage</div>
+        <div class="example-item">
+            <div class="example-description">This command provides essential functionality for SuperShell operations. Use the command with its available options as shown in the usage syntax above.</div>
+        </div>
+    </div>
+</div>
+            </div>
+
+            <div class="command" id="mkdir">
+                <div class="command-name">mkdir</div>
+                <div class="command-description">Create directories</div>
+                <div class="command-usage">mkdir [-p] <directory1> [directory2] ...</div>
+                <div class="command-platforms">Platforms: windows, linux, darwin</div>
+                
+                
+<div class="detailed-help">
+    <div class="examples-section">
+        <div class="examples-title">💡 Basic Usage</div>
+        <div class="example-item">
+            <div class="example-description">This command provides essential functionality for SuperShell operations. Use the command with its available options as shown in the usage syntax above.</div>
+        </div>
+    </div>
+</div>
+            </div>
+
+            <div class="command" id="dir">
+                <div class="command-name">dir</div>
+                <div class="command-description">List directory contents (Windows-style)</div>
+                <div class="command-usage">dir [directory]</div>
+                <div class="command-platforms">Platforms: windows, linux, darwin</div>
+                
+                
+<div class="detailed-help">
+    <div class="examples-section">
+        <div class="examples-title">💡 Basic Usage</div>
+        <div class="example-item">
+            <div class="example-description">This command provides essential functionality for SuperShell operations. Use the command with its available options as shown in the usage syntax above.</div>
+        </div>
+    </div>
+</div>
+            </div>
+
+            <div class="command" id="cd">
+                <div class="command-name">cd</div>
+                <div class="command-description">Change the current directory</div>
+                <div class="command-usage">cd <directory></div>
+                <div class="command-platforms">Platforms: windows, linux, darwin</div>
+                
+                
+<div class="detailed-help">
+    <div class="examples-section">
+        <div class="examples-title">💡 Basic Usage</div>
+        <div class="example-item">
+            <div class="example-description">This command provides essential functionality for SuperShell operations. Use the command with its available options as shown in the usage syntax above.</div>
+        </div>
+    </div>
+</div>
+            </div>
+
+            <div class="command" id="cat">
+                <div class="command-name">cat</div>
+                <div class="command-description">Display file contents</div>
+                <div class="command-usage">cat <file1> [file2] ...</div>
+                <div class="command-platforms">Platforms: windows, linux, darwin</div>
+                
+                
+<div class="detailed-help">
+    <div class="examples-section">
+        <div class="examples-title">💡 Basic Usage</div>
+        <div class="example-item">
+            <div class="example-description">This command provides essential functionality for SuperShell operations. Use the command with its available options as shown in the usage syntax above.</div>
+        </div>
+    </div>
+</div>
+            </div>
+
+            <div class="command" id="rm">
+                <div class="command-name">rm</div>
+                <div class="command-description">Remove files and directories</div>
+                <div class="command-usage">rm [-r] [-f] <file1> [file2] ...</div>
+                <div class="command-platforms">Platforms: windows, linux, darwin</div>
+                
+                
+<div class="detailed-help">
+    <div class="examples-section">
+        <div class="examples-title">💡 Basic Usage</div>
+        <div class="example-item">
+            <div class="example-description">This command provides essential functionality for SuperShell operations. Use the command with its available options as shown in the usage syntax above.</div>
+        </div>
+    </div>
+</div>
+            </div>
+
+            <div class="command" id="pwd">
+                <div class="command-name">pwd</div>
+                <div class="command-description">Print the current working directory</div>
+                <div class="command-usage">pwd</div>
+                <div class="command-platforms">Platforms: windows, linux, darwin</div>
+                
+                
+<div class="detailed-help">
+    <div class="examples-section">
+        <div class="examples-title">💡 Basic Usage</div>
+        <div class="example-item">
+            <div class="example-description">This command provides essential functionality for SuperShell operations. Use the command with its available options as shown in the usage syntax above.</div>
+        </div>
+    </div>
+</div>
+            </div>
+
+            <div class="command" id="rmdir">
+                <div class="command-name">rmdir</div>
+                <div class="command-description">Remove empty directories</div>
+                <div class="command-usage">rmdir <directory>...</div>
+                <div class="command-platforms">Platforms: windows, linux, darwin</div>
+                
+                
+<div class="detailed-help">
+    <div class="examples-section">
+        <div class="examples-title">💡 Basic Usage</div>
+        <div class="example-item">
+            <div class="example-description">This command provides essential functionality for SuperShell operations. Use the command with its available options as shown in the usage syntax above.</div>
+        </div>
+    </div>
+</div>
+            </div>
+
+            <div class="command" id="mv">
+                <div class="command-name">mv</div>
+                <div class="command-description">Move/rename files</div>
+                <div class="command-usage">mv <source> <destination></div>
+                <div class="command-platforms">Platforms: windows, linux, darwin</div>
+                
+                
+<div class="detailed-help">
+    <div class="examples-section">
+        <div class="examples-title">💡 Basic Usage</div>
+        <div class="example-item">
+            <div class="example-description">This command provides essential functionality for SuperShell operations. Use the command with its available options as shown in the usage syntax above.</div>
+        </div>
+    </div>
+</div>
+            </div>
+
+            <div class="command" id="ls">
+                <div class="command-name">ls</div>
+                <div class="command-description">List directory contents with rich formatting</div>
+                <div class="command-usage">ls [-a] [-l] [-h] [directory|pattern]</div>
+                <div class="command-platforms">Platforms: windows, linux, darwin</div>
+                
+                
+<div class="detailed-help">
+    <div class="options-section">
+        <div class="options-title">🔧 Command Options</div>
+        <div class="option-item">
+            <span class="option-flag">-l, --long</span>
+            <span class="option-description">Use long listing format with detailed information</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">-a, --all</span>
+            <span class="option-description">Show hidden files and directories</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">-h, --human-readable</span>
+            <span class="option-description">Show file sizes in human readable format</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">-R, --recursive</span>
+            <span class="option-description">List directories recursively</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">-t, --time</span>
+            <span class="option-description">Sort by modification time</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">-S, --size</span>
+            <span class="option-description">Sort by file size</span>
+        </div>
+    </div>
+    
+    <div class="examples-section">
+        <div class="examples-title">💡 Usage Examples</div>
+        <div class="example-item">
+            <div class="example-command">ls</div>
+            <div class="example-description">List files and directories in current directory</div>
+        </div>
+        <div class="example-item">
+            <div class="example-command">ls -la</div>
+            <div class="example-description">Long format listing including hidden files</div>
+        </div>
+        <div class="example-item">
+            <div class="example-command">ls -lh /home</div>
+            <div class="example-description">List /home directory with human-readable sizes</div>
+        </div>
+        <div class="example-item">
+            <div class="example-command">ls -lt</div>
+            <div class="example-description">List files sorted by modification time</div>
+        </div>
+    </div>
+    
+    <div class="use-cases-section">
+        <div class="use-cases-title">🎯 Common Use Cases</div>
+        <div class="use-case-item">
+            <div class="use-case-title">File Management</div>
+            <div class="use-case-description">Browse and explore directory contents and file information</div>
+        </div>
+        <div class="use-case-item">
+            <div class="use-case-title">System Administration</div>
+            <div class="use-case-description">Check file permissions, ownership, and system directory contents</div>
+        </div>
+        <div class="use-case-item">
+            <div class="use-case-title">Development</div>
+            <div class="use-case-description">Navigate project directories and examine file structures</div>
+        </div>
+    </div>
+</div>
+            </div>
+
+            <div class="command" id="cp">
+                <div class="command-name">cp</div>
+                <div class="command-description">Copy files and directories</div>
+                <div class="command-usage">cp [-r] [-v] <source> <destination></div>
+                <div class="command-platforms">Platforms: windows, linux, darwin</div>
+                
+                
+<div class="detailed-help">
+    <div class="options-section">
+        <div class="options-title">🔧 Command Options</div>
+        <div class="option-item">
+            <span class="option-flag">-r, --recursive</span>
+            <span class="option-description">Copy directories recursively</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">-v, --verbose</span>
+            <span class="option-description">Show detailed copy operations</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">-f, --force</span>
+            <span class="option-description">Force overwrite existing files</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">-p, --preserve</span>
+            <span class="option-description">Preserve file attributes and timestamps</span>
+        </div>
+    </div>
+    
+    <div class="examples-section">
+        <div class="examples-title">💡 Usage Examples</div>
+        <div class="example-item">
+            <div class="example-command">cp file.txt backup.txt</div>
+            <div class="example-description">Copy a single file</div>
+        </div>
+        <div class="example-item">
+            <div class="example-command">cp -r folder/ backup_folder/</div>
+            <div class="example-description">Copy directory recursively</div>
+        </div>
+        <div class="example-item">
+            <div class="example-command">cp -v *.txt /backup/</div>
+            <div class="example-description">Copy all text files with verbose output</div>
+        </div>
+    </div>
+    
+    <div class="use-cases-section">
+        <div class="use-cases-title">🎯 Common Use Cases</div>
+        <div class="use-case-item">
+            <div class="use-case-title">File Backup</div>
+            <div class="use-case-description">Create backups of important files and directories</div>
+        </div>
+        <div class="use-case-item">
+            <div class="use-case-title">File Distribution</div>
+            <div class="use-case-description">Copy files to multiple locations or systems</div>
+        </div>
+        <div class="use-case-item">
+            <div class="use-case-title">Development</div>
+            <div class="use-case-description">Copy project files, templates, and configurations</div>
+        </div>
+    </div>
+</div>
+            </div>
+        </div>
+
+        <div class="category">
+            <h2>Networking Commands</h2>
+
+            <div class="command" id="netstat">
+                <div class="command-name">netstat</div>
+                <div class="command-description">Display network connections, routing tables, and network statistics</div>
+                <div class="command-usage">netstat [-a] [-n] [-p] [-r] [-s]</div>
+                <div class="command-platforms">Platforms: windows, linux, darwin</div>
+                
+                
+<div class="detailed-help">
+    <div class="examples-section">
+        <div class="examples-title">💡 Basic Usage</div>
+        <div class="example-item">
+            <div class="example-description">This command provides essential functionality for SuperShell operations. Use the command with its available options as shown in the usage syntax above.</div>
+        </div>
+    </div>
+</div>
+            </div>
+
+            <div class="command" id="wget">
+                <div class="command-name">wget</div>
+                <div class="command-description">Download files from URLs</div>
+                <div class="command-usage">wget [-v] <url> [filename]</div>
+                <div class="command-platforms">Platforms: windows, linux, darwin</div>
+                
+                
+<div class="detailed-help">
+    <div class="options-section">
+        <div class="options-title">🔧 Command Options</div>
+        <div class="option-item">
+            <span class="option-flag">-v, --verbose</span>
+            <span class="option-description">Show detailed download progress and connection information</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">&lt;url&gt;</span>
+            <span class="option-description">URL to download from (required)</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">[filename]</span>
+            <span class="option-description">Optional filename (auto-detected from URL if not provided)</span>
+        </div>
+    </div>
+    
+    <div class="examples-section">
+        <div class="examples-title">💡 Usage Examples</div>
+        <div class="example-item">
+            <div class="example-command">wget https://example.com/file.zip</div>
+            <div class="example-description">Download a file with automatic filename detection</div>
+        </div>
+        <div class="example-item">
+            <div class="example-command">wget -v https://api.github.com/users</div>
+            <div class="example-description">Download with verbose output showing progress and speed</div>
+        </div>
+        <div class="example-item">
+            <div class="example-command">wget https://example.com/data.json mydata.json</div>
+            <div class="example-description">Download with custom filename</div>
+        </div>
+        <div class="example-item">
+            <div class="example-command">wget https://releases.ubuntu.com/20.04/ubuntu-20.04.iso</div>
+            <div class="example-description">Download large files like ISO images</div>
+        </div>
+    </div>
+    
+    <div class="use-cases-section">
+        <div class="use-cases-title">🎯 Common Use Cases</div>
+        <div class="use-case-item">
+            <div class="use-case-title">Software Downloads</div>
+            <div class="use-case-description">Download software packages, installers, and updates from the internet</div>
+        </div>
+        <div class="use-case-item">
+            <div class="use-case-title">API Data Retrieval</div>
+            <div class="use-case-description">Download JSON, XML, or other data from REST APIs for processing</div>
+        </div>
+        <div class="use-case-item">
+            <div class="use-case-title">Backup Downloads</div>
+            <div class="use-case-description">Download backup files, databases, or archives from remote servers</div>
+        </div>
+        <div class="use-case-item">
+            <div class="use-case-title">Media Downloads</div>
+            <div class="use-case-description">Download images, videos, documents, and other media files</div>
+        </div>
+    </div>
+</div>
+            </div>
+
+            <div class="command" id="nslookup">
+                <div class="command-name">nslookup</div>
+                <div class="command-description">Query DNS records for a domain with enhanced output</div>
+                <div class="command-usage">nslookup <domain> [server]</div>
+                <div class="command-platforms">Platforms: windows, linux, darwin</div>
+                
+                
+<div class="detailed-help">
+    <div class="examples-section">
+        <div class="examples-title">💡 Basic Usage</div>
+        <div class="example-item">
+            <div class="example-description">This command provides essential functionality for SuperShell operations. Use the command with its available options as shown in the usage syntax above.</div>
+        </div>
+    </div>
+</div>
+            </div>
+
+            <div class="command" id="portscan">
+                <div class="command-name">portscan</div>
+                <div class="command-description">Fast TCP port scanner with live feedback</div>
+                <div class="command-usage">portscan [-p ports] [-t timeout] [-c concurrency] <host></div>
+                <div class="command-platforms">Platforms: windows, linux, darwin</div>
+                
+                
+<div class="detailed-help">
+    <div class="options-section">
+        <div class="options-title">🔧 Command Options</div>
+        <div class="option-item">
+            <span class="option-flag">&lt;host&gt;</span>
+            <span class="option-description">Target host to scan (IP address or hostname)</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">-p, --ports &lt;range&gt;</span>
+            <span class="option-description">Specific ports (e.g., 80,443,22-25)</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">-t, --timeout &lt;ms&gt;</span>
+            <span class="option-description">Connection timeout in milliseconds</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">-c, --concurrency &lt;num&gt;</span>
+            <span class="option-description">Number of concurrent connections</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">--top-ports &lt;n&gt;</span>
+            <span class="option-description">Scan top N most common ports</span>
+        </div>
+    </div>
+    
+    <div class="examples-section">
+        <div class="examples-title">💡 Usage Examples</div>
+        <div class="example-item">
+            <div class="example-command">portscan google.com</div>
+            <div class="example-description">Scan common ports on Google's servers</div>
+        </div>
+        <div class="example-item">
+            <div class="example-command">portscan 192.168.1.1 -p 80,443,22</div>
+            <div class="example-description">Scan specific ports on local router</div>
+        </div>
+        <div class="example-item">
+            <div class="example-command">portscan example.com --top-ports 100</div>
+            <div class="example-description">Scan top 100 most common ports</div>
+        </div>
+        <div class="example-item">
+            <div class="example-command">portscan 10.0.0.1 -p 1-1000 -c 50</div>
+            <div class="example-description">Fast scan of ports 1-1000 with high concurrency</div>
+        </div>
+    </div>
+    
+    <div class="use-cases-section">
+        <div class="use-cases-title">🎯 Common Use Cases</div>
+        <div class="use-case-item">
+            <div class="use-case-title">Security Assessment</div>
+            <div class="use-case-description">Identify open ports and potential security vulnerabilities</div>
+        </div>
+        <div class="use-case-item">
+            <div class="use-case-title">Network Discovery</div>
+            <div class="use-case-description">Discover services running on network hosts</div>
+        </div>
+        <div class="use-case-item">
+            <div class="use-case-title">Service Verification</div>
+            <div class="use-case-description">Verify that services are running on expected ports</div>
+        </div>
+    </div>
+</div>
+            </div>
+
+            <div class="command" id="arp">
+                <div class="command-name">arp</div>
+                <div class="command-description">Display and manage ARP table</div>
+                <div class="command-usage">arp [-a] [-d <ip>] [ip_address]</div>
+                <div class="command-platforms">Platforms: windows, linux, darwin</div>
+                
+                
+<div class="detailed-help">
+    <div class="options-section">
+        <div class="options-title">🔧 Command Options</div>
+        <div class="option-item">
+            <span class="option-flag">-a, --all</span>
+            <span class="option-description">Show all ARP entries in the table</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">-d, --delete &lt;ip&gt;</span>
+            <span class="option-description">Delete ARP entry for specified IP address</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">[ip_address]</span>
+            <span class="option-description">Show ARP entry for specific IP address</span>
+        </div>
+    </div>
+    
+    <div class="examples-section">
+        <div class="examples-title">💡 Usage Examples</div>
+        <div class="example-item">
+            <div class="example-command">arp -a</div>
+            <div class="example-description">Display all ARP entries with MAC addresses and types</div>
+        </div>
+        <div class="example-item">
+            <div class="example-command">arp 192.168.1.1</div>
+            <div class="example-description">Show ARP entry for the gateway router</div>
+        </div>
+        <div class="example-item">
+            <div class="example-command">arp -d 192.168.1.100</div>
+            <div class="example-description">Delete ARP entry for a specific host</div>
+        </div>
+    </div>
+    
+    <div class="use-cases-section">
+        <div class="use-cases-title">🎯 Common Use Cases</div>
+        <div class="use-case-item">
+            <div class="use-case-title">Network Troubleshooting</div>
+            <div class="use-case-description">Resolve IP-to-MAC address mapping issues and connectivity problems</div>
+        </div>
+        <div class="use-case-item">
+            <div class="use-case-title">Security Monitoring</div>
+            <div class="use-case-description">Detect ARP spoofing attacks and unauthorized devices on the network</div>
+        </div>
+        <div class="use-case-item">
+            <div class="use-case-title">Network Discovery</div>
+            <div class="use-case-description">Identify active devices and their MAC addresses on the local network</div>
+        </div>
+    </div>
+</div>
+            </div>
+
+            <div class="command" id="speedtest">
+                <div class="command-name">speedtest</div>
+                <div class="command-description">Perform network speed test</div>
+                <div class="command-usage">speedtest [-s] [-q] [--download-only] [--upload-only]</div>
+                <div class="command-platforms">Platforms: windows, linux, darwin</div>
+                
+                
+<div class="detailed-help">
+    <div class="options-section">
+        <div class="options-title">🔧 Command Options</div>
+        <div class="option-item">
+            <span class="option-flag">-s, --simple</span>
+            <span class="option-description">Simple output format with just the results</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">-q, --quiet</span>
+            <span class="option-description">Minimal output during testing</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">--download-only</span>
+            <span class="option-description">Test download speed only</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">--upload-only</span>
+            <span class="option-description">Test upload speed only</span>
+        </div>
+    </div>
+    
+    <div class="examples-section">
+        <div class="examples-title">💡 Usage Examples</div>
+        <div class="example-item">
+            <div class="example-command">speedtest</div>
+            <div class="example-description">Run complete speed test with detailed output</div>
+        </div>
+        <div class="example-item">
+            <div class="example-command">speedtest -s</div>
+            <div class="example-description">Quick speed test with simple results</div>
+        </div>
+        <div class="example-item">
+            <div class="example-command">speedtest --download-only</div>
+            <div class="example-description">Test only download speed</div>
+        </div>
+        <div class="example-item">
+            <div class="example-command">speedtest --upload-only -q</div>
+            <div class="example-description">Test only upload speed quietly</div>
+        </div>
+    </div>
+    
+    <div class="use-cases-section">
+        <div class="use-cases-title">🎯 Common Use Cases</div>
+        <div class="use-case-item">
+            <div class="use-case-title">Internet Performance Monitoring</div>
+            <div class="use-case-description">Regular testing of internet connection speed and quality</div>
+        </div>
+        <div class="use-case-item">
+            <div class="use-case-title">ISP Verification</div>
+            <div class="use-case-description">Verify that ISP is delivering promised bandwidth speeds</div>
+        </div>
+        <div class="use-case-item">
+            <div class="use-case-title">Network Troubleshooting</div>
+            <div class="use-case-description">Diagnose slow internet connections and network performance issues</div>
+        </div>
+    </div>
+</div>
+            </div>
+
+            <div class="command" id="ping">
+                <div class="command-name">ping</div>
+                <div class="command-description">Send ICMP echo requests to a host with live feedback</div>
+                <div class="command-usage">ping [-c count] [-t timeout] <host></div>
+                <div class="command-platforms">Platforms: windows, linux, darwin</div>
+                
+                
+<div class="detailed-help">
+    <div class="options-section">
+        <div class="options-title">🔧 Command Options</div>
+        <div class="option-item">
+            <span class="option-flag">&lt;host&gt;</span>
+            <span class="option-description">Target host to ping (IP address or hostname)</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">-c, --count &lt;number&gt;</span>
+            <span class="option-description">Number of ping packets to send</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">-t, --timeout &lt;ms&gt;</span>
+            <span class="option-description">Timeout for each ping in milliseconds</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">-i, --interval &lt;ms&gt;</span>
+            <span class="option-description">Interval between pings in milliseconds</span>
+        </div>
+    </div>
+    
+    <div class="examples-section">
+        <div class="examples-title">💡 Usage Examples</div>
+        <div class="example-item">
+            <div class="example-command">ping google.com</div>
+            <div class="example-description">Basic connectivity test to Google</div>
+        </div>
+        <div class="example-item">
+            <div class="example-command">ping -c 5 8.8.8.8</div>
+            <div class="example-description">Send 5 ping packets to Google DNS</div>
+        </div>
+        <div class="example-item">
+            <div class="example-command">ping -t 2000 example.com</div>
+            <div class="example-description">Ping with 2 second timeout</div>
+        </div>
+    </div>
+    
+    <div class="use-cases-section">
+        <div class="use-cases-title">🎯 Common Use Cases</div>
+        <div class="use-case-item">
+            <div class="use-case-title">Connectivity Testing</div>
+            <div class="use-case-description">Test basic network connectivity to hosts and services</div>
+        </div>
+        <div class="use-case-item">
+            <div class="use-case-title">Latency Measurement</div>
+            <div class="use-case-description">Measure network latency and response times</div>
+        </div>
+        <div class="use-case-item">
+            <div class="use-case-title">Network Troubleshooting</div>
+            <div class="use-case-description">Diagnose network connectivity issues and packet loss</div>
+        </div>
+    </div>
+</div>
+            </div>
+
+            <div class="command" id="route">
+                <div class="command-name">route</div>
+                <div class="command-description">Display and manage routing table</div>
+                <div class="command-usage">route [print] [-4|-6] [add|delete] [destination] [gateway]</div>
+                <div class="command-platforms">Platforms: windows, linux, darwin</div>
+                
+                
+<div class="detailed-help">
+    <div class="options-section">
+        <div class="options-title">🔧 Command Options</div>
+        <div class="option-item">
+            <span class="option-flag">print, show</span>
+            <span class="option-description">Display routing table (default action)</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">add &lt;dest&gt; &lt;gateway&gt;</span>
+            <span class="option-description">Add a new route to the routing table</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">delete &lt;dest&gt; [gateway]</span>
+            <span class="option-description">Delete a route from the routing table</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">-4, --ipv4</span>
+            <span class="option-description">Show only IPv4 routes</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">-6, --ipv6</span>
+            <span class="option-description">Show only IPv6 routes</span>
+        </div>
+    </div>
+    
+    <div class="examples-section">
+        <div class="examples-title">💡 Usage Examples</div>
+        <div class="example-item">
+            <div class="example-command">route</div>
+            <div class="example-description">Display the complete routing table</div>
+        </div>
+        <div class="example-item">
+            <div class="example-command">route -4</div>
+            <div class="example-description">Show only IPv4 routing entries</div>
+        </div>
+        <div class="example-item">
+            <div class="example-command">route add 10.0.0.0/8 192.168.1.1</div>
+            <div class="example-description">Add route for 10.x.x.x network via gateway</div>
+        </div>
+        <div class="example-item">
+            <div class="example-command">route delete 10.0.0.0/8</div>
+            <div class="example-description">Remove route for 10.x.x.x network</div>
+        </div>
+    </div>
+    
+    <div class="use-cases-section">
+        <div class="use-cases-title">🎯 Common Use Cases</div>
+        <div class="use-case-item">
+            <div class="use-case-title">Network Configuration</div>
+            <div class="use-case-description">Configure routing for multi-homed systems and complex network topologies</div>
+        </div>
+        <div class="use-case-item">
+            <div class="use-case-title">VPN Setup</div>
+            <div class="use-case-description">Add routes for VPN connections and remote network access</div>
+        </div>
+        <div class="use-case-item">
+            <div class="use-case-title">Network Troubleshooting</div>
+            <div class="use-case-description">Diagnose routing issues and verify network path configurations</div>
+        </div>
+    </div>
+</div>
+            </div>
+
+            <div class="command" id="ipconfig">
+                <div class="command-name">ipconfig</div>
+                <div class="command-description">Display network interface configuration</div>
+                <div class="command-usage">ipconfig [/all] [/release] [/renew] [/flushdns]</div>
+                <div class="command-platforms">Platforms: windows, linux, darwin</div>
+                
+                
+<div class="detailed-help">
+    <div class="examples-section">
+        <div class="examples-title">💡 Basic Usage</div>
+        <div class="example-item">
+            <div class="example-description">This command provides essential functionality for SuperShell operations. Use the command with its available options as shown in the usage syntax above.</div>
+        </div>
+    </div>
+</div>
+            </div>
+
+            <div class="command" id="tracert">
+                <div class="command-name">tracert</div>
+                <div class="command-description">Trace the route to a host with live feedback</div>
+                <div class="command-usage">tracert [-h maxhops] <host></div>
+                <div class="command-platforms">Platforms: windows, linux, darwin</div>
+                
+                
+<div class="detailed-help">
+    <div class="examples-section">
+        <div class="examples-title">💡 Basic Usage</div>
+        <div class="example-item">
+            <div class="example-description">This command provides essential functionality for SuperShell operations. Use the command with its available options as shown in the usage syntax above.</div>
+        </div>
+    </div>
+</div>
+            </div>
+        </div>
+
+        <div class="category">
+            <h2>Advanced Tools</h2>
+
+            <div class="command" id="fastcp-backup">
+                <div class="command-name">fastcp-backup</div>
+                <div class="command-description">Backup files to cloud storage (S3-compatible)</div>
+                <div class="command-usage">fastcp-backup <source> <bucket> [--encrypt] [--compress] [--incremental]</div>
+                <div class="command-platforms">Platforms: windows, linux, darwin</div>
+                
+                
+<div class="detailed-help">
+    <div class="examples-section">
+        <div class="examples-title">💡 Basic Usage</div>
+        <div class="example-item">
+            <div class="example-description">This command provides essential functionality for SuperShell operations. Use the command with its available options as shown in the usage syntax above.</div>
+        </div>
+    </div>
+</div>
+            </div>
+
+            <div class="command" id="sniff">
+                <div class="command-name">sniff</div>
+                <div class="command-description">Capture and analyze network packets with advanced filtering</div>
+                <div class="command-usage">sniff [-i <interface>] [-c <count>] [-p <protocol>] [-s <source>] [-d <dest>] [--port <port>] [--save <file>] [-v]</div>
+                <div class="command-platforms">Platforms: windows, linux, darwin</div>
+                <div class="privilege-warning">⚠️ Requires Administrator Privileges</div>
+                
+<div class="detailed-help">
+    <div class="options-section">
+        <div class="options-title">🔧 Command Options</div>
+        <div class="option-item">
+            <span class="option-flag">-i, --interface &lt;name&gt;</span>
+            <span class="option-description">Network interface to monitor (default: eth0)</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">-c, --count &lt;number&gt;</span>
+            <span class="option-description">Number of packets to capture (default: 10)</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">-p, --protocol &lt;proto&gt;</span>
+            <span class="option-description">Filter by protocol (TCP, UDP, HTTP, HTTPS, DNS, SSH, FTP, etc.)</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">-s, --source &lt;ip&gt;</span>
+            <span class="option-description">Filter by source IP address</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">-d, --dest &lt;ip&gt;</span>
+            <span class="option-description">Filter by destination IP address</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">--port &lt;port&gt;</span>
+            <span class="option-description">Filter by port number (matches source or destination)</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">-v, --verbose</span>
+            <span class="option-description">Show detailed packet information</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">--hex</span>
+            <span class="option-description">Display hexadecimal payload dump</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">--save &lt;file&gt;</span>
+            <span class="option-description">Save capture to file</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">--continuous</span>
+            <span class="option-description">Continuous capture mode</span>
+        </div>
+        <div class="option-item">
+            <span class="option-flag">-t, --timeout &lt;seconds&gt;</span>
+            <span class="option-description">Capture timeout for continuous mode</span>
+        </div>
+    </div>
+    
+    <div class="examples-section">
+        <div class="examples-title">💡 Usage Examples</div>
+        <div class="example-item">
+            <div class="example-command">sniff -c 10</div>
+            <div class="example-description">Capture 10 packets from the default interface</div>
+        </div>
+        <div class="example-item">
+            <div class="example-command">sniff -p HTTP -v</div>
+            <div class="example-description">Capture HTTP packets with detailed verbose output</div>
+        </div>
+        <div class="example-item">
+            <div class="example-command">sniff -s 192.168.1.100 --hex</div>
+            <div class="example-description">Capture packets from specific IP with hexadecimal payload dump</div>
+        </div>
+        <div class="example-item">
+            <div class="example-command">sniff --port 80 -c 5</div>
+            <div class="example-description">Capture 5 packets on port 80 (HTTP traffic)</div>
+        </div>
+        <div class="example-item">
+            <div class="example-command">sniff -p TCP -d 8.8.8.8 --save capture.pcap</div>
+            <div class="example-description">Capture TCP packets to Google DNS and save to file</div>
+        </div>
+    </div>
+    
+    <div class="use-cases-section">
+        <div class="use-cases-title">🎯 Common Use Cases</div>
+        <div class="use-case-item">
+            <div class="use-case-title">Network Troubleshooting</div>
+            <div class="use-case-description">Monitor network traffic to identify connectivity issues, packet loss, or unusual network behavior</div>
+        </div>
+        <div class="use-case-item">
+            <div class="use-case-title">Security Analysis</div>
+            <div class="use-case-description">Detect suspicious network activity, unauthorized connections, or potential security breaches</div>
+        </div>
+        <div class="use-case-item">
+            <div class="use-case-title">Protocol Analysis</div>
+            <div class="use-case-description">Analyze specific protocols (HTTP, DNS, SSH) to understand application behavior and performance</div>
+        </div>
+        <div class="use-case-item">
+            <div class="use-case-title">Performance Monitoring</div>
+            <div class="use-case-description">Monitor network performance, bandwidth usage, and identify bottlenecks in network communication</div>
+        </div>
+    </div>
+</div>
+            </div>
+
+            <div class="command" id="fastcp-recv">
+                <div class="command-name">fastcp-recv</div>
+                <div class="command-description">Ultra-fast encrypted file/directory transfer (receiver)</div>
+                <div class="command-usage">fastcp-recv [destination] [-p <port>] [-e] [--auto-accept]</div>
+                <div class="command-platforms">Platforms: windows, linux, darwin</div>
+                
+                
+<div class="detailed-help">
+    <div class="examples-section">
+        <div class="examples-title">💡 Basic Usage</div>
+        <div class="example-item">
+            <div class="example-description">This command provides essential functionality for SuperShell operations. Use the command with its available options as shown in the usage syntax above.</div>
+        </div>
+    </div>
+</div>
+            </div>
+
+            <div class="command" id="fastcp-restore">
+                <div class="command-name">fastcp-restore</div>
+                <div class="command-description">Restore files from cloud storage (S3-compatible)</div>
+                <div class="command-usage">fastcp-restore <bucket> <backup-id> <destination> [--verify] [--overwrite]</div>
+                <div class="command-platforms">Platforms: windows, linux, darwin</div>
+                
+                
+<div class="detailed-help">
+    <div class="examples-section">
+        <div class="examples-title">💡 Basic Usage</div>
+        <div class="example-item">
+            <div class="example-description">This command provides essential functionality for SuperShell operations. Use the command with its available options as shown in the usage syntax above.</div>
+        </div>
+    </div>
+</div>
+            </div>
+
+            <div class="command" id="fastcp-dedup">
+                <div class="command-name">fastcp-dedup</div>
+                <div class="command-description">Deduplication analysis and statistics</div>
+                <div class="command-usage">fastcp-dedup <path> [analyze|clean] [--dry-run] [--threshold <size>]</div>
+                <div class="command-platforms">Platforms: windows, linux, darwin</div>
+                
+                
+<div class="detailed-help">
+    <div class="examples-section">
+        <div class="examples-title">💡 Basic Usage</div>
+        <div class="example-item">
+            <div class="example-description">This command provides essential functionality for SuperShell operations. Use the command with its available options as shown in the usage syntax above.</div>
+        </div>
+    </div>
+</div>
+            </div>
+
+            <div class="command" id="netdiscover">
+                <div class="command-name">netdiscover</div>
+                <div class="command-description">Discover live hosts on a subnet</div>
+                <div class="command-usage">netdiscover [-r <range>] [-t <timeout>] [-p] [--passive]</div>
+                <div class="command-platforms">Platforms: windows, linux, darwin</div>
+                
+                
+<div class="detailed-help">
+    <div class="examples-section">
+        <div class="examples-title">💡 Basic Usage</div>
+        <div class="example-item">
+            <div class="example-description">This command provides essential functionality for SuperShell operations. Use the command with its available options as shown in the usage syntax above.</div>
+        </div>
+    </div>
+</div>
+            </div>
+
+            <div class="command" id="fastcp-send">
+                <div class="command-name">fastcp-send</div>
+                <div class="command-description">Ultra-fast encrypted file/directory transfer (sender)</div>
+                <div class="command-usage">fastcp-send <file/dir> <destination> [-p <port>] [-e] [--compress]</div>
+                <div class="command-platforms">Platforms: windows, linux, darwin</div>
+                
+                
+<div class="detailed-help">
+    <div class="examples-section">
+        <div class="examples-title">💡 Basic Usage</div>
+        <div class="example-item">
+            <div class="example-description">This command provides essential functionality for SuperShell operations. Use the command with its available options as shown in the usage syntax above.</div>
+        </div>
+    </div>
+</div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>SuperShell v2.0.0 - Advanced Command Line Interface</p>
+            <p>Generated by helphtml command</p>
+        </div>
+    </div>
+</body>
+</html>
