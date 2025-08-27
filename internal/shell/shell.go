@@ -1,6 +1,7 @@
 package shell
 
 import (
+	"bufio"
 	"context"
 	"fmt"
 	"os"
@@ -134,7 +135,14 @@ func (s *BasicShell) Initialize(ctx context.Context) error {
 func (s *BasicShell) Run(ctx context.Context) error {
 	s.logger.Info("Starting shell main loop")
 
-	// Create the interactive shell using go-prompt
+	// Use simple shell by default, go-prompt can be enabled with SUPERSHELL_FANCY=1
+	useFancyShell := os.Getenv("SUPERSHELL_FANCY") == "1"
+
+	if !useFancyShell {
+		return s.runSimpleShell(ctx)
+	}
+
+	// Create the interactive shell using go-prompt with minimal options
 	p := prompt.New(
 		s.promptExecutor,
 		s.promptCompleter,
@@ -187,8 +195,13 @@ func (s *BasicShell) promptExecutor(input string) {
 		return
 	}
 
+	// Display result with proper newline handling
 	if result.Output != "" {
-		fmt.Println(result.Output)
+		fmt.Print(result.Output)
+		// Ensure we end with a newline
+		if !strings.HasSuffix(result.Output, "\n") {
+			fmt.Println()
+		}
 	}
 }
 
@@ -236,4 +249,86 @@ func (s *BasicShell) Shutdown(ctx context.Context) error {
 
 	s.logger.Info("Shell shutdown complete")
 	return nil
+}
+
+// runSimpleShell runs a simple shell without go-prompt for better terminal compatibility
+func (s *BasicShell) runSimpleShell(ctx context.Context) error {
+	fmt.Println("SuperShell v0.03 🧠")
+	fmt.Println("Type 'help' for commands, 'history' for smart history, or 'exit' to quit.")
+	fmt.Println()
+
+	// Create a channel to handle graceful shutdown
+	done := make(chan bool)
+
+	// Handle context cancellation
+	go func() {
+		<-ctx.Done()
+		done <- true
+	}()
+
+	scanner := bufio.NewScanner(os.Stdin)
+
+	for {
+		select {
+		case <-done:
+			return ctx.Err()
+		default:
+			// Display prompt
+			fmt.Print(s.prompter.GetPrompt())
+
+			// Read input with proper error handling
+			if !scanner.Scan() {
+				if err := scanner.Err(); err != nil {
+					fmt.Printf("❌ Input error: %v\n", err)
+				}
+				break
+			}
+
+			input := strings.TrimSpace(scanner.Text())
+			if input == "" {
+				continue
+			}
+
+			// Handle exit
+			if input == "exit" || input == "quit" {
+				fmt.Println("👋 Goodbye!")
+				return nil
+			}
+
+			// Execute command
+			result, err := s.executor.Execute(ctx, input)
+			if err != nil {
+				fmt.Printf("❌ Error: %v\n", err)
+				continue
+			}
+
+			// Display result with proper newline handling
+			if result.Output != "" {
+				fmt.Print(result.Output)
+				if !strings.HasSuffix(result.Output, "\n") {
+					fmt.Println()
+				}
+			}
+
+			// Display error if any
+			if result.Error != nil {
+				fmt.Printf("❌ Error: %v\n", result.Error)
+			}
+
+			// Display warnings if any
+			for _, warning := range result.Warnings {
+				fmt.Printf("⚠️  Warning: %s\n", warning)
+			}
+		}
+	}
+
+	return scanner.Err()
+}
+
+// clearTerminalState clears any problematic terminal state
+func (s *BasicShell) clearTerminalState() {
+	// Send escape sequence to reset terminal state
+	fmt.Print("\033[0m")   // Reset all attributes
+	fmt.Print("\033[?25h") // Show cursor
+	fmt.Print("\r")        // Return to beginning of line
 }
