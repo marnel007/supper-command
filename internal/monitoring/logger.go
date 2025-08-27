@@ -2,8 +2,8 @@ package monitoring
 
 import (
 	"fmt"
-	"io"
 	"log"
+	"os"
 	"time"
 
 	"suppercommand/internal/config"
@@ -41,10 +41,9 @@ type BasicLogger struct {
 
 // NewLogger creates a new logger instance
 func NewLogger(config config.MonitoringConfig) Logger {
-	// For clean UI, discard all logging output during normal operation
 	logger := &BasicLogger{
-		level:  LogLevelError,                          // Only show errors if needed
-		logger: log.New(io.Discard, "", log.LstdFlags), // Discard all output for clean UI
+		level:  LogLevelInfo, // Default level
+		logger: log.New(os.Stdout, "", log.LstdFlags),
 	}
 
 	return logger

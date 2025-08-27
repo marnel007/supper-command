@@ -135,10 +135,10 @@ func (s *BasicShell) Initialize(ctx context.Context) error {
 func (s *BasicShell) Run(ctx context.Context) error {
 	s.logger.Info("Starting shell main loop")
 
-	// Use simple shell by default, go-prompt can be enabled with SUPERSHELL_FANCY=1
-	useFancyShell := os.Getenv("SUPERSHELL_FANCY") == "1"
+	// Use go-prompt by default, simple shell can be enabled with SUPERSHELL_SIMPLE=1
+	useSimpleShell := os.Getenv("SUPERSHELL_SIMPLE") == "1"
 
-	if !useFancyShell {
+	if useSimpleShell {
 		return s.runSimpleShell(ctx)
 	}
 
@@ -253,8 +253,8 @@ func (s *BasicShell) Shutdown(ctx context.Context) error {
 
 // runSimpleShell runs a simple shell without go-prompt for better terminal compatibility
 func (s *BasicShell) runSimpleShell(ctx context.Context) error {
-	fmt.Println("SuperShell v0.03 🧠")
-	fmt.Println("Type 'help' for commands, 'history' for smart history, or 'exit' to quit.")
+	fmt.Println("SuperShell v0.03 - Smart Command Line Interface")
+	fmt.Println("Type 'help' for available commands or 'exit' to quit.")
 	fmt.Println()
 
 	// Create a channel to handle graceful shutdown
