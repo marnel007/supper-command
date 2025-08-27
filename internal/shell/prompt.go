@@ -49,15 +49,16 @@ func (p *Prompter) getColoredPrompt() string {
 
 	var prompt strings.Builder
 
-	// SuperShell branding with colors
-	prompt.WriteString("\033[38;5;51m🚀 \033[1;36mSuperShell\033[0m") // Cyan rocket + text
-	prompt.WriteString("\033[38;5;46m●\033[0m")                      // Green dot
+	// Clean, professional prompt design
+	prompt.WriteString("\033[1;36mSuper\033[0m") // Bold cyan "Super"
+	prompt.WriteString("\033[1;35mShell\033[0m") // Bold magenta "Shell"
+	prompt.WriteString("\033[38;5;46m ●\033[0m") // Green status dot
 
-	// Directory path
-	prompt.WriteString(fmt.Sprintf("\033[90m[\033[33m%s\033[90m]\033[0m", shortPath))
+	// Directory path with clean brackets
+	prompt.WriteString(fmt.Sprintf(" \033[90m[\033[33m%s\033[90m]\033[0m", shortPath))
 
-	// Prompt arrows
-	prompt.WriteString(" \033[38;5;51m❯\033[38;5;45m❯\033[38;5;39m❯\033[0m ")
+	// Clean arrow prompt
+	prompt.WriteString(" \033[1;32m❯\033[0m ")
 
 	return prompt.String()
 }
@@ -67,7 +68,7 @@ func (p *Prompter) getPlainPrompt() string {
 	cwd, _ := os.Getwd()
 	shortPath := p.getShortenedPath(cwd)
 
-	return fmt.Sprintf("SuperShell [%s] >>> ", shortPath)
+	return fmt.Sprintf("SuperShell [%s] > ", shortPath)
 }
 
 // getShortenedPath shortens long paths for display
@@ -75,8 +76,14 @@ func (p *Prompter) getShortenedPath(path string) string {
 	// Convert to OS-appropriate path separators
 	path = filepath.Clean(path)
 
-	// If path is too long, show beginning + ... + end
-	if len(path) > 40 {
+	// Replace home directory with ~
+	homeDir, err := os.UserHomeDir()
+	if err == nil && strings.HasPrefix(path, homeDir) {
+		path = "~" + path[len(homeDir):]
+	}
+
+	// If path is still too long, show beginning + ... + end
+	if len(path) > 35 {
 		parts := strings.Split(path, string(os.PathSeparator))
 		if len(parts) > 3 {
 			return parts[0] + string(os.PathSeparator) + "..." + string(os.PathSeparator) + parts[len(parts)-1]
@@ -92,7 +99,7 @@ func (p *Prompter) GetLivePrefix() (string, bool) {
 	shortPath := p.getShortenedPath(cwd)
 
 	// Clean prompt without ANSI codes for go-prompt compatibility
-	return fmt.Sprintf("🚀 SuperShell●[%s] ❯❯❯ ", shortPath), true
+	return fmt.Sprintf("SuperShell ● [%s] ❯ ", shortPath), true
 }
 
 // Shutdown gracefully shuts down the prompter
