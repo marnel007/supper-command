@@ -2,6 +2,8 @@
 
 A powerful, cross-platform command-line shell with advanced system management capabilities.
 
+> **Latest Update (v0.03)**: Fixed Go 1.14 compatibility and terminal display issues. Now provides a stable, professional command-line experience with improved tab completion and better terminal handling.
+
 ## ✨ Features
 
 ### 🔥 **Security & Firewall Management**
@@ -22,11 +24,11 @@ A powerful, cross-platform command-line shell with advanced system management ca
 - Active user session monitoring
 - System component health tracking
 
-### 🌐 **Remote Administration**
-- SSH-based remote server management
-- Multi-server command execution
-- Server configuration management
-- Mock SSH implementation for development
+### 🌐 **Remote Administration** *(Temporarily Disabled)*
+- SSH-based remote server management *(Go 1.14 compatibility)*
+- Multi-server command execution *(Coming soon)*
+- Server configuration management *(Coming soon)*
+- Mock SSH implementation for development *(Coming soon)*
 
 ### 🧠 **Smart History System**
 - AI-powered command history with intelligent search
@@ -58,25 +60,40 @@ A powerful, cross-platform command-line shell with advanced system management ca
 
 ## 🚀 Quick Start
 
+### System Requirements
+- **Go Version:** 1.14 or later (tested with Go 1.14.4)
+- **OS:** Windows 10+, Linux (Ubuntu 18.04+), macOS 10.15+
+- **Memory:** 64MB RAM minimum, 128MB recommended
+- **Privileges:** Administrator/root for system management features
+
 ### Installation
 ```bash
 # Clone the repository
-git clone <repository-url>
-cd supershell
+git clone https://github.com/marnel007/supper-command.git
+cd supper-command
 
 # Build SuperShell
-go build ./cmd/supershell
+go build -o supershell.exe ./cmd/supershell
+
+# Or use the build script
+.\build.ps1
 ```
 
 ### Basic Usage
 ```bash
 # Run interactive shell
-./supershell.exe
+.\supershell.exe
+
+# Run with stable terminal mode (recommended for resizing)
+$env:SUPERSHELL_STABLE="1"; .\supershell.exe
+
+# Run with simple mode (most stable)
+$env:SUPERSHELL_SIMPLE="1"; .\supershell.exe
 
 # Run single commands
-./supershell.exe -c "firewall status"
-./supershell.exe -c "perf analyze"
-./supershell.exe -c "server health"
+.\supershell.exe -c "firewall status"
+.\supershell.exe -c "perf analyze"
+.\supershell.exe -c "server health"
 ```
 
 ### First Commands to Try
@@ -100,8 +117,33 @@ history suggest            # Smart suggestions
 # Get help
 help
 help firewall
-help history
 lookup -m
+```
+
+## 🔧 Recent Fixes & Improvements (v0.03)
+
+### ✅ **Go 1.14 Compatibility**
+- Fixed `os.ReadFile`/`os.WriteFile` compatibility issues
+- Updated all filesystem commands to use `ioutil` equivalents
+- Resolved dependency version conflicts
+- Added compatibility scripts (`fix_go114.ps1`)
+
+### ✅ **Terminal Display Improvements**
+- Fixed skewed command suggestions alignment
+- Resolved Enter key line deletion issues
+- Improved tab completion formatting
+- Added suggestion count limits for cleaner display
+- Better terminal resize handling
+
+### ✅ **New Terminal Modes**
+- **Stable Mode**: `$env:SUPERSHELL_STABLE="1"` - Best for window resizing
+- **Simple Mode**: `$env:SUPERSHELL_SIMPLE="1"` - Most stable experience
+- **Default Mode**: Enhanced go-prompt with better compatibility
+
+### ✅ **Build Improvements**
+- Added `build.ps1` script for easy compilation
+- Better error handling and dependency management
+- Improved cross-platform compatibility
 ```
 
 ## 📚 Documentation
@@ -122,7 +164,7 @@ lookup -m
 | **🔥 Security** | `firewall` | Firewall management and security policies |
 | **⚡ Performance** | `perf` | System performance monitoring and analysis |
 | **🖥️ Server** | `server` | System administration and service management |
-| **🌐 Remote** | `remote` | Remote server management via SSH |
+| **🌐 Remote** | `remote` | Remote server management *(temporarily disabled)* |
 | **🌐 Network** | `ping`, `tracert`, `nslookup`, `netstat`, `portscan`, `sniff`, `speedtest` | Network tools and diagnostics |
 | **📁 Files** | `ls`, `cat`, `cp`, `mv`, `rm`, `mkdir` | File system operations |
 | **⚙️ System** | `sysinfo`, `whoami`, `hostname`, `killtask`, `ver` | System information and utilities |
@@ -155,6 +197,31 @@ lookup -m               # Interactive command menu
 - Privilege requirement notifications
 - Detailed troubleshooting guidance
 
+## 🔧 Recent Fixes & Improvements (v0.03)
+
+### ✅ **Go 1.14 Compatibility**
+- Fixed `os.ReadFile`/`os.WriteFile` compatibility issues
+- Updated all filesystem commands to use `ioutil` equivalents
+- Resolved dependency version conflicts
+- Added compatibility scripts (`fix_go114.ps1`)
+
+### ✅ **Terminal Display Improvements**
+- Fixed skewed command suggestions alignment
+- Resolved Enter key line deletion issues
+- Improved tab completion formatting
+- Added suggestion count limits for cleaner display
+- Better terminal resize handling
+
+### ✅ **New Terminal Modes**
+- **Stable Mode:** `$env:SUPERSHELL_STABLE="1"` - Best for window resizing
+- **Simple Mode:** `$env:SUPERSHELL_SIMPLE="1"` - Most reliable experience
+- **Default Mode:** Enhanced go-prompt with better configuration
+
+### ✅ **Build Improvements**
+- Added `build.ps1` script for easy compilation
+- Better error handling and dependency management
+- Improved cross-platform compatibility
+
 ## 🧪 Testing
 
 ### Run All Tests
@@ -169,7 +236,7 @@ go test ./tests/integration/... -v
 go test ./tests/e2e/... -v
 
 # Run test script
-./scripts/run_tests.ps1
+.\scripts\run_tests.ps1
 ```
 
 ### Manual Testing
@@ -321,7 +388,7 @@ server health             # Check system health
 
 ## 📄 License
 
-[Add your license information here]
+GPL v 3 MAY CHANGE
 
 ## 🙏 Acknowledgments
 
