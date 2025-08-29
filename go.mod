@@ -1,10 +1,10 @@
 module suppercommand
 
-go 1.24.5
+go 1.14
 
 require (
 	github.com/c-bata/go-prompt v0.2.6
-	github.com/fatih/color v1.16.0
+	github.com/fatih/color v1.13.0
 	github.com/google/gopacket v1.1.19
 	golang.org/x/crypto v0.16.0
 	golang.org/x/sys v0.15.0

@@ -3,6 +3,7 @@ package filesystem
 import (
 	"context"
 	"fmt"
+	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -81,7 +82,7 @@ func (d *DirCommand) Execute(ctx context.Context, args *commands.Arguments) (*co
 	}
 
 	// Read directory
-	entries, err := os.ReadDir(dir)
+	entries, err := ioutil.ReadDir(dir)
 	if err != nil {
 		return &commands.Result{
 			Output:   "",
@@ -92,7 +93,7 @@ func (d *DirCommand) Execute(ctx context.Context, args *commands.Arguments) (*co
 	}
 
 	// Filter entries by pattern
-	var filteredEntries []os.DirEntry
+	var filteredEntries []os.FileInfo
 	for _, entry := range entries {
 		// Skip hidden files unless -a flag is used
 		if !showAll && strings.HasPrefix(entry.Name(), ".") {
@@ -138,8 +139,8 @@ func (d *DirCommand) Execute(ctx context.Context, args *commands.Arguments) (*co
 	totalSize := int64(0)
 
 	// Separate directories and files for better organization
-	var directories []os.DirEntry
-	var files []os.DirEntry
+	var directories []os.FileInfo
+	var files []os.FileInfo
 
 	for _, entry := range entries {
 		if entry.IsDir() {
@@ -155,12 +156,7 @@ func (d *DirCommand) Execute(ctx context.Context, args *commands.Arguments) (*co
 		output.WriteString("───────────────────────────────────────────────────────────────\n")
 
 		for _, entry := range directories {
-			info, err := entry.Info()
-			if err != nil {
-				continue
-			}
-
-			modTime := info.ModTime().Format("01/02/2006  03:04 PM")
+			modTime := entry.ModTime().Format("01/02/2006  03:04 PM")
 
 			output.WriteString(fmt.Sprintf("%s    %s  %s\n",
 				dateColor.Sprint(modTime),
@@ -177,13 +173,8 @@ func (d *DirCommand) Execute(ctx context.Context, args *commands.Arguments) (*co
 		output.WriteString("───────────────────────────────────────────────────────────────\n")
 
 		for _, entry := range files {
-			info, err := entry.Info()
-			if err != nil {
-				continue
-			}
-
-			modTime := info.ModTime().Format("01/02/2006  03:04 PM")
-			size := info.Size()
+			modTime := entry.ModTime().Format("01/02/2006  03:04 PM")
+			size := entry.Size()
 
 			// Determine file type and color
 			fileName := entry.Name()
@@ -263,14 +254,12 @@ func (d *DirCommand) Execute(ctx context.Context, args *commands.Arguments) (*co
 }
 
 // sortEntries sorts directory entries based on specified criteria
-func (d *DirCommand) sortEntries(entries []os.DirEntry, byName, bySize, byDate bool) {
+func (d *DirCommand) sortEntries(entries []os.FileInfo, byName, bySize, byDate bool) {
 	if bySize {
 		// Sort by size (largest first)
 		for i := 0; i < len(entries)-1; i++ {
 			for j := i + 1; j < len(entries); j++ {
-				info1, _ := entries[i].Info()
-				info2, _ := entries[j].Info()
-				if info1 != nil && info2 != nil && info1.Size() < info2.Size() {
+				if entries[i].Size() < entries[j].Size() {
 					entries[i], entries[j] = entries[j], entries[i]
 				}
 			}
@@ -279,9 +268,7 @@ func (d *DirCommand) sortEntries(entries []os.DirEntry, byName, bySize, byDate b
 		// Sort by modification date (newest first)
 		for i := 0; i < len(entries)-1; i++ {
 			for j := i + 1; j < len(entries); j++ {
-				info1, _ := entries[i].Info()
-				info2, _ := entries[j].Info()
-				if info1 != nil && info2 != nil && info1.ModTime().Before(info2.ModTime()) {
+				if entries[i].ModTime().Before(entries[j].ModTime()) {
 					entries[i], entries[j] = entries[j], entries[i]
 				}
 			}

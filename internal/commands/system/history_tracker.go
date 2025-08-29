@@ -1,6 +1,8 @@
 package system
 
 import (
+	"io/ioutil"
+
 	"encoding/json"
 	"os"
 	"path/filepath"
@@ -69,7 +71,7 @@ func (ht *HistoryTracker) loadHistory() ([]HistoryEntry, error) {
 		return entries, nil
 	}
 
-	data, err := os.ReadFile(ht.historyFile)
+	data, err := ioutil.ReadFile(ht.historyFile)
 	if err != nil {
 		return nil, err
 	}
@@ -89,7 +91,7 @@ func (ht *HistoryTracker) saveHistory(entries []HistoryEntry) error {
 		return err
 	}
 
-	return os.WriteFile(ht.historyFile, data, 0644)
+	return ioutil.WriteFile(ht.historyFile, data, 0644)
 }
 
 // generateTags generates relevant tags for a command

@@ -3,6 +3,7 @@ package intelligence
 import (
 	"context"
 	"fmt"
+	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -202,7 +203,7 @@ func (p *FileSystemProvider) GetCompletions(ctx context.Context, input *InputInf
 	}
 
 	// Read directory
-	entries, err := os.ReadDir(searchDir)
+	entries, err := ioutil.ReadDir(searchDir)
 	if err != nil {
 		return completions, nil
 	}

@@ -2,6 +2,7 @@ package core
 
 import (
 	"fmt"
+	"io/ioutil"
 	"os"
 	osuser "os/user" // Use alias to avoid naming conflict with function parameters
 	"path/filepath"
@@ -168,7 +169,7 @@ func completer(d prompt.Document) []prompt.Suggest {
 	if dir == "" {
 		dir = "."
 	}
-	entries, err := os.ReadDir(dir)
+	entries, err := ioutil.ReadDir(dir)
 	if err != nil {
 		return nil
 	}

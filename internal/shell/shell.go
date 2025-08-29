@@ -136,13 +136,19 @@ func (s *BasicShell) Run(ctx context.Context) error {
 	s.logger.Info("Starting shell main loop")
 
 	// Use go-prompt by default, simple shell can be enabled with SUPERSHELL_SIMPLE=1
+	// Use stable terminal mode with SUPERSHELL_STABLE=1 for better resize handling
 	useSimpleShell := os.Getenv("SUPERSHELL_SIMPLE") == "1"
+	useStableMode := os.Getenv("SUPERSHELL_STABLE") == "1"
 
 	if useSimpleShell {
 		return s.runSimpleShell(ctx)
 	}
 
-	// Create the interactive shell using go-prompt with minimal options
+	if useStableMode {
+		return s.runStableShell(ctx)
+	}
+
+	// Create the interactive shell using go-prompt with better terminal handling
 	p := prompt.New(
 		s.promptExecutor,
 		s.promptCompleter,
@@ -154,6 +160,10 @@ func (s *BasicShell) Run(ctx context.Context) error {
 		prompt.OptionSelectedSuggestionBGColor(prompt.Blue),
 		prompt.OptionSelectedSuggestionTextColor(prompt.White),
 		prompt.OptionPreviewSuggestionTextColor(prompt.Yellow),
+		// Fix terminal display issues
+		prompt.OptionMaxSuggestion(6), // Reduce to prevent skewing
+		prompt.OptionShowCompletionAtStart(),
+		prompt.OptionCompletionWordSeparator(" "),
 	)
 
 	// Run the prompt in a goroutine so we can handle context cancellation
@@ -323,6 +333,70 @@ func (s *BasicShell) runSimpleShell(ctx context.Context) error {
 	}
 
 	return scanner.Err()
+}
+
+// runStableShell runs a stable shell with better terminal resize handling
+func (s *BasicShell) runStableShell(ctx context.Context) error {
+	fmt.Println("SuperShell v0.03 - Smart Command Line Interface (Stable Mode)")
+	fmt.Println("Type 'help' for available commands or 'exit' to quit.")
+	fmt.Println("Press TAB for command suggestions.")
+	fmt.Println()
+
+	// Create a channel to handle graceful shutdown
+	done := make(chan bool)
+
+	// Handle context cancellation
+	go func() {
+		<-ctx.Done()
+		done <- true
+	}()
+
+	scanner := bufio.NewScanner(os.Stdin)
+
+	for {
+		select {
+		case <-done:
+			return ctx.Err()
+		default:
+			// Display prompt
+			fmt.Print(s.prompter.GetPrompt())
+
+			// Read input with proper error handling
+			if !scanner.Scan() {
+				if err := scanner.Err(); err != nil {
+					fmt.Printf("❌ Input error: %v\n", err)
+				}
+				break
+			}
+
+			input := strings.TrimSpace(scanner.Text())
+			if input == "" {
+				continue
+			}
+
+			// Handle exit
+			if input == "exit" || input == "quit" {
+				fmt.Println("👋 Goodbye!")
+				return nil
+			}
+
+			// Execute command
+			result, err := s.executor.Execute(ctx, input)
+			if err != nil {
+				fmt.Printf("❌ Error: %v\n", err)
+				continue
+			}
+
+			// Display result
+			if result.Output != "" {
+				fmt.Print(result.Output)
+				// Ensure we end with a newline
+				if !strings.HasSuffix(result.Output, "\n") {
+					fmt.Println()
+				}
+			}
+		}
+	}
 }
 
 // clearTerminalState clears any problematic terminal state

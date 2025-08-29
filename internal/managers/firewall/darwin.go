@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"os"
+	"io/ioutil"
 	"os/exec"
 	"strings"
 	"time"
@@ -115,7 +115,7 @@ func (d *DarwinFirewallManager) BackupRules(ctx context.Context, filepath string
 		return types.NewFirewallError("backup", types.PlatformDarwin, err, "failed to marshal rules")
 	}
 
-	if err := os.WriteFile(filepath, data, 0644); err != nil {
+	if err := ioutil.WriteFile(filepath, data, 0644); err != nil {
 		return types.NewFirewallError("backup", types.PlatformDarwin, err, "failed to write backup file")
 	}
 

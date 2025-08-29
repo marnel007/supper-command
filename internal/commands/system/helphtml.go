@@ -3,6 +3,7 @@ package system
 import (
 	"context"
 	"fmt"
+	"io/ioutil"
 	"os"
 	"strings"
 	"time"
@@ -55,7 +56,7 @@ func (h *HelpHTMLCommand) Execute(ctx context.Context, args *commands.Arguments)
 	htmlContent := h.generateHTML()
 
 	// Write to file
-	err := os.WriteFile(filename, []byte(htmlContent), 0644)
+	err := ioutil.WriteFile(filename, []byte(htmlContent), 0644)
 	if err != nil {
 		return &commands.Result{
 			Output:   fmt.Sprintf("Error: Cannot write to file %s: %v\n", filename, err),

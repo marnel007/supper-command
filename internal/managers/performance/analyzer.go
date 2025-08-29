@@ -4,8 +4,8 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"math"
-	"os"
 	"sort"
 	"time"
 
@@ -424,12 +424,12 @@ func (a *AdvancedAnalyzer) SaveThresholds(filepath string) error {
 		return err
 	}
 
-	return os.WriteFile(filepath, data, 0644)
+	return ioutil.WriteFile(filepath, data, 0644)
 }
 
 // LoadThresholds loads custom thresholds from a file
 func (a *AdvancedAnalyzer) LoadThresholds(filepath string) error {
-	data, err := os.ReadFile(filepath)
+	data, err := ioutil.ReadFile(filepath)
 	if err != nil {
 		return err
 	}

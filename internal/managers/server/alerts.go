@@ -1,6 +1,8 @@
 package server
 
 import (
+	"io/ioutil"
+
 	"context"
 	"encoding/json"
 	"fmt"
@@ -298,12 +300,12 @@ func (a *AlertManager) SaveConfig(filepath string) error {
 		return err
 	}
 
-	return os.WriteFile(filepath, data, 0644)
+	return ioutil.WriteFile(filepath, data, 0644)
 }
 
 // LoadConfig loads alert configuration from a file
 func (a *AlertManager) LoadConfig(filepath string) error {
-	data, err := os.ReadFile(filepath)
+	data, err := ioutil.ReadFile(filepath)
 	if err != nil {
 		return err
 	}

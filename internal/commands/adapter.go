@@ -2,11 +2,12 @@ package commands
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"suppercommand/internal/commands/firewall"
 	"suppercommand/internal/commands/performance"
-	"suppercommand/internal/commands/remote"
+	// "suppercommand/internal/commands/remote" // Temporarily disabled due to Go 1.14 compatibility
 	"suppercommand/internal/commands/server"
 )
 
@@ -63,16 +64,18 @@ func NewServerAdapter() Command {
 
 // NewRemoteAdapter creates an adapter for the remote command
 func NewRemoteAdapter() Command {
-	remoteCmd := remote.NewRemoteCommand()
+	// Temporarily disabled due to Go 1.14 compatibility
 	return &SimpleCommandAdapter{
 		BaseCommand: NewBaseCommand(
-			remoteCmd.Name(),
-			remoteCmd.Description(),
-			remoteCmd.Usage(),
+			"remote",
+			"Remote management (temporarily disabled)",
+			"remote [disabled]",
 			[]string{"windows", "linux", "darwin"},
 			false,
 		),
-		executeFunc: remoteCmd.Execute,
+		executeFunc: func(ctx context.Context, args []string) error {
+			return fmt.Errorf("remote management temporarily disabled due to Go 1.14 compatibility")
+		},
 	}
 }
 

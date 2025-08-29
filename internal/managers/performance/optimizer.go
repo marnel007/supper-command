@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"os"
+	"io/ioutil"
 	"os/exec"
 	"strings"
 	"time"
@@ -383,12 +383,12 @@ func (o *OptimizationEngine) SaveOptimizationHistory(filepath string) error {
 		return err
 	}
 
-	return os.WriteFile(filepath, data, 0644)
+	return ioutil.WriteFile(filepath, data, 0644)
 }
 
 // LoadOptimizationHistory loads the optimization history from a file
 func (o *OptimizationEngine) LoadOptimizationHistory(filepath string) error {
-	data, err := os.ReadFile(filepath)
+	data, err := ioutil.ReadFile(filepath)
 	if err != nil {
 		return err
 	}

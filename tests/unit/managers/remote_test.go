@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"suppercommand/internal/managers/remote"
+	"suppercommand/internal/managers/remote_disabled"
 	"suppercommand/internal/types"
 )
 

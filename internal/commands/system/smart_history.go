@@ -1,6 +1,8 @@
 package system
 
 import (
+	"io/ioutil"
+
 	"context"
 	"encoding/json"
 	"fmt"
@@ -436,7 +438,7 @@ func (h *SmartHistoryCommand) loadHistory() ([]HistoryEntry, error) {
 		return entries, nil // Return empty history if file doesn't exist
 	}
 
-	data, err := os.ReadFile(h.historyFile)
+	data, err := ioutil.ReadFile(h.historyFile)
 	if err != nil {
 		return nil, err
 	}
@@ -456,7 +458,7 @@ func (h *SmartHistoryCommand) saveHistory(entries []HistoryEntry) error {
 		return err
 	}
 
-	return os.WriteFile(h.historyFile, data, 0644)
+	return ioutil.WriteFile(h.historyFile, data, 0644)
 }
 
 // Helper methods for formatting and utilities
@@ -973,7 +975,7 @@ func (h *SmartHistoryCommand) exportJSON(entries []HistoryEntry, filename string
 		}, nil
 	}
 
-	err = os.WriteFile(filename, data, 0644)
+	err = ioutil.WriteFile(filename, data, 0644)
 	if err != nil {
 		return &commands.Result{
 			Output:   fmt.Sprintf("Error writing file: %v", err),
@@ -1009,7 +1011,7 @@ func (h *SmartHistoryCommand) exportCSV(entries []HistoryEntry, filename string,
 			tags))
 	}
 
-	err := os.WriteFile(filename, []byte(output.String()), 0644)
+	err := ioutil.WriteFile(filename, []byte(output.String()), 0644)
 	if err != nil {
 		return &commands.Result{
 			Output:   fmt.Sprintf("Error writing file: %v", err),
@@ -1046,7 +1048,7 @@ func (h *SmartHistoryCommand) exportText(entries []HistoryEntry, filename string
 		output.WriteString("\n")
 	}
 
-	err := os.WriteFile(filename, []byte(output.String()), 0644)
+	err := ioutil.WriteFile(filename, []byte(output.String()), 0644)
 	if err != nil {
 		return &commands.Result{
 			Output:   fmt.Sprintf("Error writing file: %v", err),

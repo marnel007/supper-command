@@ -2,6 +2,7 @@ package shell
 
 import (
 	"context"
+	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -91,9 +92,9 @@ func (c *Completer) getCommandCompletions(prefix string) []Completion {
 			}
 
 			description := cmd.Description()
-			// Truncate long descriptions
-			if len(description) > 60 {
-				description = description[:57] + "..."
+			// Truncate long descriptions to prevent skewing
+			if len(description) > 40 {
+				description = description[:37] + "..."
 			}
 
 			completions = append(completions, Completion{
@@ -102,6 +103,11 @@ func (c *Completer) getCommandCompletions(prefix string) []Completion {
 				Type:        CompletionTypeCommand,
 			})
 		}
+	}
+
+	// Limit completions to prevent display issues
+	if len(completions) > 8 {
+		completions = completions[:8]
 	}
 
 	return completions
@@ -116,7 +122,7 @@ func (c *Completer) getFileCompletions(prefix string) []Completion {
 		dir = "."
 	}
 
-	entries, err := os.ReadDir(dir)
+	entries, err := ioutil.ReadDir(dir)
 	if err != nil {
 		return completions
 	}
@@ -140,6 +146,11 @@ func (c *Completer) getFileCompletions(prefix string) []Completion {
 				})
 			}
 		}
+	}
+
+	// Limit file completions to prevent display issues
+	if len(completions) > 6 {
+		completions = completions[:6]
 	}
 
 	return completions

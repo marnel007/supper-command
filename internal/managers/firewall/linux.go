@@ -1,6 +1,8 @@
 package firewall
 
 import (
+	"io/ioutil"
+
 	"context"
 	"encoding/json"
 	"fmt"
@@ -331,7 +333,7 @@ func (l *LinuxFirewallManager) BackupRules(ctx context.Context, filepath string)
 		return types.NewFirewallError("backup", types.PlatformLinux, err, "failed to marshal rules")
 	}
 
-	if err := os.WriteFile(filepath, data, 0644); err != nil {
+	if err := ioutil.WriteFile(filepath, data, 0644); err != nil {
 		return types.NewFirewallError("backup", types.PlatformLinux, err, "failed to write backup file")
 	}
 
@@ -340,7 +342,7 @@ func (l *LinuxFirewallManager) BackupRules(ctx context.Context, filepath string)
 
 // RestoreRules restores Linux firewall rules from a file
 func (l *LinuxFirewallManager) RestoreRules(ctx context.Context, filepath string) error {
-	data, err := os.ReadFile(filepath)
+	data, err := ioutil.ReadFile(filepath)
 	if err != nil {
 		return types.NewFirewallError("restore", types.PlatformLinux, err, "failed to read backup file")
 	}

@@ -7,7 +7,7 @@ import (
 
 	"suppercommand/internal/commands/firewall"
 	"suppercommand/internal/commands/performance"
-	"suppercommand/internal/commands/remote"
+	"suppercommand/internal/commands/remote_disabled"
 	"suppercommand/internal/commands/server"
 )
 

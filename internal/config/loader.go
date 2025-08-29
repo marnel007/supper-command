@@ -3,7 +3,7 @@ package config
 import (
 	"encoding/json"
 	"fmt"
-	"os"
+	"io/ioutil"
 	"path/filepath"
 	"strings"
 	"time"
@@ -37,7 +37,7 @@ func (l *BasicLoader) Load(path string) (*Config, error) {
 		return nil, fmt.Errorf("configuration path cannot be empty")
 	}
 
-	data, err := os.ReadFile(path)
+	data, err := ioutil.ReadFile(path)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read config file: %w", err)
 	}

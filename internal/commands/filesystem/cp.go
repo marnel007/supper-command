@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -201,7 +202,7 @@ func (c *CpCommand) copyDirectory(src, dest string, verbose bool, output *string
 	}
 
 	// Read source directory
-	entries, err := os.ReadDir(src)
+	entries, err := ioutil.ReadDir(src)
 	if err != nil {
 		return err
 	}

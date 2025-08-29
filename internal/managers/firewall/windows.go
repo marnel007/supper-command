@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"os"
+	"io/ioutil"
 	"os/exec"
 	"strings"
 	"time"
@@ -126,7 +126,7 @@ func (w *WindowsFirewallManager) BackupRules(ctx context.Context, filepath strin
 		return types.NewFirewallError("backup", types.PlatformWindows, err, "failed to marshal rules")
 	}
 
-	if err := os.WriteFile(filepath, data, 0644); err != nil {
+	if err := ioutil.WriteFile(filepath, data, 0644); err != nil {
 		return types.NewFirewallError("backup", types.PlatformWindows, err, "failed to write backup file")
 	}
 
@@ -135,7 +135,7 @@ func (w *WindowsFirewallManager) BackupRules(ctx context.Context, filepath strin
 
 // RestoreRules restores Windows firewall rules from a file
 func (w *WindowsFirewallManager) RestoreRules(ctx context.Context, filepath string) error {
-	data, err := os.ReadFile(filepath)
+	data, err := ioutil.ReadFile(filepath)
 	if err != nil {
 		return types.NewFirewallError("restore", types.PlatformWindows, err, "failed to read backup file")
 	}

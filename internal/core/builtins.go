@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"html/template"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"os"
 	"os/exec"
@@ -169,7 +170,7 @@ func (l *LsCommand) Execute(args []string) string {
 	if len(args) > 0 {
 		dir = args[0]
 	}
-	files, err := os.ReadDir(dir)
+	files, err := ioutil.ReadDir(dir)
 	if err != nil {
 		return "Error: " + err.Error()
 	}
@@ -404,7 +405,7 @@ func (d *DirCommand) Execute(args []string) string {
 		pattern = args[0]
 	}
 	cwd, _ := os.Getwd()
-	entries, err := os.ReadDir(cwd)
+	entries, err := ioutil.ReadDir(cwd)
 	if err != nil {
 		return color.New(color.FgRed).Sprint("The system cannot read the directory.")
 	}
@@ -489,7 +490,7 @@ func SaveConfig(path string, cfg *Config) error {
 		fmt.Println("YAML marshal error:", err)
 		return err
 	}
-	err = os.WriteFile(path, data, 0644)
+	err = ioutil.WriteFile(path, data, 0644)
 	if err != nil {
 		fmt.Println("File write error:", err)
 	}
@@ -517,7 +518,7 @@ func RunScript(filename string) {
 }
 
 func LoadScripts(dir string) {
-	files, _ := os.ReadDir(dir)
+	files, _ := ioutil.ReadDir(dir)
 	for _, f := range files {
 		if strings.HasSuffix(f.Name(), ".ss") {
 			RunScript(filepath.Join(dir, f.Name()))
@@ -527,7 +528,7 @@ func LoadScripts(dir string) {
 
 func (c *CdCommand) Completer(args []string) []prompt.Suggest {
 	if len(args) > 0 && args[0] == "cd" {
-		entries, _ := os.ReadDir(".")
+		entries, _ := ioutil.ReadDir(".")
 		var dirSugg []prompt.Suggest
 		for _, entry := range entries {
 			if entry.IsDir() {
@@ -1744,7 +1745,7 @@ func (s *SysInfoCommand) Execute(args []string) string {
 			return "Error marshaling JSON: " + err.Error()
 		}
 		if exportFile != "" {
-			err := os.WriteFile(exportFile, data, 0644)
+			err := ioutil.WriteFile(exportFile, data, 0644)
 			if err != nil {
 				return "Error writing to file: " + err.Error()
 			}
@@ -5415,7 +5416,7 @@ func (f *FastcpRestoreCommand) executeRestore(bucket, dst, key, provider, region
 			}
 
 			// Write file
-			err = os.WriteFile(localPath, data, 0644)
+			err = ioutil.WriteFile(localPath, data, 0644)
 			if err != nil {
 				fmt.Printf("❌ Failed to write file %s: %v\n", localPath, err)
 				continue

@@ -3,6 +3,7 @@ package filesystem
 import (
 	"context"
 	"fmt"
+	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -69,7 +70,7 @@ func (l *LsCommand) Execute(ctx context.Context, args *commands.Arguments) (*com
 	}
 
 	// Read directory
-	entries, err := os.ReadDir(dir)
+	entries, err := ioutil.ReadDir(dir)
 	if err != nil {
 		return &commands.Result{
 			Output:   "",
@@ -80,7 +81,7 @@ func (l *LsCommand) Execute(ctx context.Context, args *commands.Arguments) (*com
 	}
 
 	// Filter entries
-	var filteredEntries []os.DirEntry
+	var filteredEntries []os.FileInfo
 	for _, entry := range entries {
 		// Skip hidden files unless -a flag is used
 		if !showAll && strings.HasPrefix(entry.Name(), ".") {
@@ -114,22 +115,17 @@ func (l *LsCommand) Execute(ctx context.Context, args *commands.Arguments) (*com
 		totalDirs := 0
 
 		for _, entry := range filteredEntries {
-			info, err := entry.Info()
-			if err != nil {
-				continue
-			}
-
 			// Permissions
-			mode := info.Mode()
+			mode := entry.Mode()
 			perms := mode.String()
 
 			// Size
-			size := info.Size()
+			size := entry.Size()
 			totalSize += size
 			sizeStr := formatSize(size, showHuman)
 
 			// Modified time
-			modTime := info.ModTime().Format("Jan 02 15:04")
+			modTime := entry.ModTime().Format("Jan 02 15:04")
 
 			// Name with colors
 			name := entry.Name()

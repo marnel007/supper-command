@@ -163,7 +163,7 @@ func (a *Application) registerBuiltinCommands() error {
 		commands.NewFirewallAdapter(),
 		commands.NewPerformanceAdapter(),
 		commands.NewServerAdapter(),
-		commands.NewRemoteAdapter(),
+		// commands.NewRemoteAdapter(), // Temporarily disabled due to Go 1.14 compatibility
 	}
 
 	// Register all commands

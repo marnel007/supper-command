@@ -1,6 +1,8 @@
 package filesystem
 
 import (
+	"io/ioutil"
+
 	"context"
 	"fmt"
 	"os"
@@ -82,7 +84,7 @@ func (c *CatCommand) Execute(ctx context.Context, args *commands.Arguments) (*co
 		}
 
 		// Read and display file contents
-		content, err := os.ReadFile(filename)
+		content, err := ioutil.ReadFile(filename)
 		if err != nil {
 			output += color.New(color.FgRed).Sprintf("cat: %s: %v\n", filename, err)
 			hasErrors = true

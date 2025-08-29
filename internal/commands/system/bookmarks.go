@@ -1,6 +1,8 @@
 package system
 
 import (
+	"io/ioutil"
+
 	"context"
 	"encoding/json"
 	"fmt"
@@ -329,7 +331,7 @@ func (b *BookmarkCommand) loadBookmarksFromFile() ([]Bookmark, error) {
 		return bookmarks, nil
 	}
 
-	data, err := os.ReadFile(b.bookmarkFile)
+	data, err := ioutil.ReadFile(b.bookmarkFile)
 	if err != nil {
 		return nil, err
 	}
@@ -348,7 +350,7 @@ func (b *BookmarkCommand) saveBookmarksToFile(bookmarks []Bookmark) error {
 		return err
 	}
 
-	return os.WriteFile(b.bookmarkFile, data, 0644)
+	return ioutil.WriteFile(b.bookmarkFile, data, 0644)
 }
 
 func (b *BookmarkCommand) categorizeCommand(command string) string {
